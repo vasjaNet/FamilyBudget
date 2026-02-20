@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'java-library'
+}
+
+description = 'fb-commons-lib'
+
+// Apply dependency management plugin for this module
+apply plugin: 'io.spring.dependency-management'
+
+// Inherit common configurations from root
+java {
+    toolchain {
+        languageVersion = rootProject.ext.javaVersion
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Import Spring Boot BOM for transitive dependency management
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${rootProject.ext.springBootVersion}"
+    }
+}
+
+dependencies {
+    // Common utilities
+    compileOnly "org.projectlombok:lombok:${rootProject.ext.lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${rootProject.ext.lombokVersion}"
+
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+

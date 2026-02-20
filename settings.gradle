@@ -1,0 +1,6 @@
+rootProject.name = 'FamilyBudget'
+
+include 'fb-commons-lib'
+include 'fb-userService'
+include 'fb-chatService'
+
