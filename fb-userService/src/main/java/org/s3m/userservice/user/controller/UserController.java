@@ -1,12 +1,12 @@
-package org.s3m.userservice.controller;
+package org.s3m.userservice.user.controller;
 
 import lombok.AllArgsConstructor;
 import org.s3m.commonlib.config.ApiResponse;
 import org.s3m.commonlib.util.AppConstants;
-import org.s3m.userservice.dto.CreateUserRequest;
-import org.s3m.userservice.dto.UpdateUserRequest;
-import org.s3m.userservice.dto.UserResponse;
-import org.s3m.userservice.service.UserService;
+import org.s3m.userservice.user.dto.CreateUserRequest;
+import org.s3m.userservice.user.dto.UpdateUserRequest;
+import org.s3m.userservice.user.dto.UserResponse;
+import org.s3m.userservice.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +21,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<UserResponse>> createUser(
-            @RequestBody CreateUserRequest request,
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(@RequestBody CreateUserRequest request,
+                                                                @RequestHeader(value = "X-User-Id",
+                                                                        defaultValue = "SYSTEM") String userId) {
         UserResponse response = userService.createUser(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(ApiResponse.success("User created successfully", response));

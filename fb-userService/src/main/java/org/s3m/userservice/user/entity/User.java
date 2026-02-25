@@ -1,4 +1,4 @@
-package org.s3m.userservice.entity;
+package org.s3m.userservice.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

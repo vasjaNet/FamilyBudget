@@ -1,4 +1,4 @@
-package org.s3m.userservice.dto;
+package org.s3m.userservice.user.dto;
 
 import lombok.*;
 
@@ -6,8 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateUserRequest {
-    private String username;
+public class UpdateUserRequest {
     private String email;
     private String firstName;
     private String lastName;

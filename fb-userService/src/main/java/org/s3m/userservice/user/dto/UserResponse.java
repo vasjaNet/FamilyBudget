@@ -1,4 +1,4 @@
-package org.s3m.userservice.dto;
+package org.s3m.userservice.user.dto;
 
 import lombok.*;
 import java.time.LocalDateTime;

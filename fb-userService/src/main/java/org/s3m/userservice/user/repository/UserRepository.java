@@ -1,6 +1,6 @@
-package org.s3m.userservice.repository;
+package org.s3m.userservice.user.repository;
 
-import org.s3m.userservice.entity.User;
+import org.s3m.userservice.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

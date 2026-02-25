@@ -1,11 +1,14 @@
-package org.s3m.userservice.service;
+package org.s3m.userservice.user.service;
 
 import lombok.AllArgsConstructor;
-import org.s3m.userservice.dto.CreateUserRequest;
-import org.s3m.userservice.dto.UpdateUserRequest;
-import org.s3m.userservice.dto.UserResponse;
-import org.s3m.userservice.entity.User;
-import org.s3m.userservice.repository.UserRepository;
+import org.s3m.userservice.user.dto.CreateUserRequest;
+import org.s3m.userservice.user.dto.UpdateUserRequest;
+import org.s3m.userservice.user.dto.UserResponse;
+import org.s3m.userservice.user.entity.User;
+import org.s3m.userservice.user.repository.UserRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -19,6 +22,7 @@ public class UserService {
     private final UserRepository userRepository;
 
 
+    @CachePut(value = "users", key = "#result.id")
     public UserResponse createUser(CreateUserRequest request, String changedBy) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already exists");
@@ -40,6 +44,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable( value = "users", key = "#userId")
     public UserResponse getUserById(UUID userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -60,6 +65,7 @@ public class UserService {
             .collect(Collectors.toList());
     }
 
+    @CacheEvict(value = "users", key = "#userId")
     public UserResponse updateUser(UUID userId, UpdateUserRequest request, String changedBy) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -77,6 +83,7 @@ public class UserService {
         return mapToResponse(updatedUser);
     }
 
+    @CacheEvict(value = "users", key = "#userId")
     public void deleteUser(UUID userId, String changedBy) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
