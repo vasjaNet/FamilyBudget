@@ -17,6 +17,15 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     schemas: public
+  redis:
+    host: localhost
+    port: 6379
+
+  cache:
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=60s,recordStats
+    redis:
+      time-to-live: 10m
 #  cache:
 #    type: caffeine
 #    cache-names:
