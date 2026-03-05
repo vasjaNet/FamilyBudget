@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fb-user-service
+spec:
+    type: ClusterIP
+    selector:
+      app: fb-user-service
+    ports:
+      - port: 8080
+        targetPort: 8080
+  

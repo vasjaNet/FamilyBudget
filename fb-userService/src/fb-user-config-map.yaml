@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fb-user-config-map
+data:
+  DB_URL: jdbc:postgresql://postgres:5432/appdb
+  DB_HOST: postgres
+  DB_USERNAME: postgres
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  init.sql: |
+    CREATE DATABASE family_budget_user
+    WITH
+        ENCODING = 'UTF8'
+    LC_COLLATE = 'en_US.UTF-8'
+    LC_CTYPE = 'en_US.UTF-8'
+    TEMPLATE = template0;
+    \connect  family_budget_user;
+    CREATE SCHEMA IF NOT EXISTS public;
+    GRANT USAGE ON SCHEMA public TO postgres;
+    GRANT CREATE ON SCHEMA public TO postgres;
+    CREATE TABLE IF NOT EXISTS public.flyway_schema_history (
+    installed_rank INTEGER NOT NULL,
+    version VARCHAR(50),
+    description VARCHAR(255) NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    script VARCHAR(1000) NOT NULL,
+    checksum INTEGER,
+    installed_by VARCHAR(100) NOT NULL,
+    installed_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    execution_time INTEGER NOT NULL,
+    success BOOLEAN NOT NULL,
+    PRIMARY KEY (installed_rank)
+    );
+    CREATE INDEX IF NOT EXISTS idx_flyway_success ON public.flyway_schema_history(success);
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO postgres;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO postgres;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT EXECUTE ON FUNCTIONS TO postgres;
+        
