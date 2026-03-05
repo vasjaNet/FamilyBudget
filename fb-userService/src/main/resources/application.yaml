@@ -9,16 +9,16 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url: jdbc:postgresql://localhost:5432/family_budget_user
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/family_budget_user
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: postgres
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
   flyway:
     locations: classpath:db/migration
     baseline-on-migrate: true
     schemas: public
   redis:
-    host: localhost
+    host: ${REDIS_HOST:localhost}
     port: 6379
 
   cache:
