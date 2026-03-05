@@ -17,10 +17,14 @@ public class TwoLevelCache implements Cache {
     }
 
     @Override
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     @Override
-    public Object getNativeCache() { return this; }
+    public Object getNativeCache() {
+        return this;
+    }
 
     @Override
     public ValueWrapper get(Object key) {

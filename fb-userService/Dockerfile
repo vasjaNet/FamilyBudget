@@ -1,0 +1,8 @@
+FROM eclipse-temurin:21-jre
+LABEL authors="vasyl"
+
+WORKDIR /app
+COPY build/libs/fb-userService-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
