@@ -5,6 +5,7 @@ import org.s3m.userservice.user.dto.CreateUserRequest;
 import org.s3m.userservice.user.dto.UpdateUserRequest;
 import org.s3m.userservice.user.dto.UserResponse;
 import org.s3m.userservice.user.entity.User;
+import org.s3m.userservice.user.mapper.UserMapper;
 import org.s3m.userservice.user.repository.UserRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -13,13 +14,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
 
     @CachePut(value = "users", key = "#result.id")
@@ -30,17 +31,11 @@ public class UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
         }
-
-        User user = User.builder()
-            .username(request.getUsername())
-            .email(request.getEmail())
-            .firstName(request.getFirstName())
-            .lastName(request.getLastName())
-            .createdBy(changedBy)
-            .build();
+        User user = userMapper.mapToUser(request);
+        user.setCreatedBy(changedBy);
 
         User savedUser = userRepository.save(user);
-        return mapToResponse(savedUser);
+        return userMapper.mapToResponse(savedUser);
     }
 
     @Transactional(readOnly = true)
@@ -48,21 +43,21 @@ public class UserService {
     public UserResponse getUserById(UUID userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return mapToResponse(user);
+        return userMapper.mapToResponse(user);
     }
 
     @Transactional(readOnly = true)
     public UserResponse getUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return mapToResponse(user);
+        return userMapper.mapToResponse(user);
     }
 
     @Transactional(readOnly = true)
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
-            .map(this::mapToResponse)
-            .collect(Collectors.toList());
+            .map(userMapper::mapToResponse)
+            .toList();
     }
 
     @CacheEvict(value = "users", key = "#userId")
@@ -80,7 +75,7 @@ public class UserService {
         user.setUpdatedBy(changedBy);
 
         User updatedUser = userRepository.save(user);
-        return mapToResponse(updatedUser);
+        return userMapper.mapToResponse(updatedUser);
     }
 
     @CacheEvict(value = "users", key = "#userId")
@@ -88,20 +83,6 @@ public class UserService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
         userRepository.delete(user);
-    }
-
-    private UserResponse mapToResponse(User user) {
-        return UserResponse.builder()
-            .id(user.getId())
-            .username(user.getUsername())
-            .email(user.getEmail())
-            .firstName(user.getFirstName())
-            .lastName(user.getLastName())
-            .createdAt(user.getCreatedAt())
-            .updatedAt(user.getUpdatedAt())
-            .createdBy(user.getCreatedBy())
-            .updatedBy(user.getUpdatedBy())
-            .build();
     }
 }
 
