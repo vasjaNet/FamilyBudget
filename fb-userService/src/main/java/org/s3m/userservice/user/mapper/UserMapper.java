@@ -5,7 +5,7 @@ import org.s3m.userservice.user.dto.CreateUserRequest;
 import org.s3m.userservice.user.dto.UserResponse;
 import org.s3m.userservice.user.entity.User;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface UserMapper {
 
     UserResponse mapToResponse(User user);
