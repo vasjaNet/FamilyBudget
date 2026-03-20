@@ -63,3 +63,42 @@ configure(subprojects.findAll { it.name in ['fb-userService', 'fb-chatService'] 
     }
 }
 
+// Configure fb-webapp as frontend subproject
+configure(subprojects.findAll { it.name == 'fb-webapp' }) {
+    // Determine npm command based on OS
+    def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+    def npmCmd = isWindows ? 'npm.cmd' : 'npm'
+
+    // Create npm install task
+    tasks.register('npmInstall', Exec) {
+        group = 'build'
+        description = 'Install npm dependencies'
+        workingDir = projectDir
+        commandLine npmCmd, 'install'
+    }
+
+    // Create npm build task
+    tasks.register('npmRunBuild', Exec) {
+        group = 'build'
+        description = 'Build Angular frontend'
+        workingDir = projectDir
+        commandLine npmCmd, 'run', 'build'
+    }
+
+    // Create npm test task
+    tasks.register('npmTest', Exec) {
+        group = 'verification'
+        description = 'Run Angular tests'
+        workingDir = projectDir
+        commandLine npmCmd, 'test', '--', '--no-watch', '--no-progress', '--browsers=ChromeHeadless'
+    }
+
+    tasks.named('build') {
+        dependsOn 'npmInstall', 'npmRunBuild'
+    }
+
+    tasks.named('clean') {
+        delete 'dist'
+    }
+}
+
