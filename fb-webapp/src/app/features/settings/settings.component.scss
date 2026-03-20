@@ -1,0 +1,39 @@
+.settings-page {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    color: rgba(0, 0, 0, 0.7);
+    margin-bottom: 2rem;
+  }
+
+  .families-section,
+  .members-section {
+    margin-bottom: 2rem;
+  }
+
+  mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  mat-list-item {
+    cursor: pointer;
+
+    &.selected {
+      background: rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  .family-actions {
+    margin-top: 1rem;
+  }
+}

@@ -1,0 +1,25 @@
+.auth-page {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 64px);
+}
+
+.auth-card {
+  max-width: 400px;
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+  display: block;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
