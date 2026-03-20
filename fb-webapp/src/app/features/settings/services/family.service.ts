@@ -19,8 +19,8 @@ export class FamilyService {
 
   /** List families for the current user. When backend has GET /families, use it. */
   getMyFamilies(): Observable<Family[]> {
-    // When FamilyController exists: return this.http.get<{ data: Family[] }>(`${API}/families`).pipe(map(r => r.data ?? []));
-    return of(this.getStubFamilies());
+    return this.http.get<{ data: Family[] }>(`${API}/families`)
+      .pipe(map(r => r.data ?? []));
   }
 
   /** Create a family. When backend has POST /families, use it. */
@@ -53,8 +53,8 @@ export class FamilyService {
 
   /** Get members of a family. When backend has GET /families/:id/members, use it. */
   getMembers(familyId: string): Observable<FamilyMember[]> {
-    // When FamilyController exists: return this.http.get<{ data: FamilyMember[] }>(`${API}/families/${familyId}/members`).pipe(map(r => r.data ?? []));
-    return of(this.getStubMembers(familyId));
+    return this.http.get<{ data: FamilyMember[] }>(`${API}/families/${familyId}/members`)
+      .pipe(map(r => r.data ?? []));
   }
 
   /** Add a member to a family. When backend has POST /families/:id/members, use it. */
@@ -68,41 +68,5 @@ export class FamilyService {
       role: request.role,
       createdAt: new Date().toISOString(),
     });
-  }
-
-  private getStubFamilies(): Family[] {
-    return [
-      {
-        id: 'stub-1',
-        name: 'My Family',
-        description: 'Primary household',
-        ownerId: 'current-user',
-        ownerUsername: 'me',
-        memberCount: 2,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ];
-  }
-
-  private getStubMembers(familyId: string): FamilyMember[] {
-    return [
-      {
-        id: 'm1',
-        familyId,
-        userId: 'current-user',
-        username: 'Me',
-        role: 'OWNER',
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: 'm2',
-        familyId,
-        userId: 'other-user',
-        username: 'Other',
-        role: 'FULL_ACCESS',
-        createdAt: new Date().toISOString(),
-      },
-    ];
   }
 }

@@ -1,0 +1,6 @@
+// Frontend build configuration for fb-webapp
+plugins {
+    id 'base'
+}
+
+// Npm tasks are configured in root build.gradle
