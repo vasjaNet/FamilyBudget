@@ -1,0 +1,64 @@
+.chat-page {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h1 {
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    color: rgba(0, 0, 0, 0.7);
+    margin-bottom: 2rem;
+  }
+
+  .family-select {
+    min-width: 200px;
+  }
+
+  .messages {
+    min-height: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(0, 0, 0, 0.02);
+  }
+
+  .message {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+
+    &.own {
+      margin-left: 2rem;
+      background: #e3f2fd;
+    }
+
+    .sender {
+      font-weight: 500;
+      margin-right: 0.5rem;
+    }
+
+    .time {
+      font-size: 0.75rem;
+      color: rgba(0, 0, 0, 0.6);
+      display: block;
+      margin-top: 0.25rem;
+    }
+  }
+
+  .send-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .message-input {
+    flex: 1;
+  }
+}

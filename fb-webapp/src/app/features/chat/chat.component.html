@@ -1,0 +1,45 @@
+<div class="chat-page">
+  <h1>Group chat</h1>
+  <p class="subtitle">Chat with your family group.</p>
+
+  @if (families().length === 0) {
+    <mat-card>
+      <mat-card-content>
+        <p>No family groups yet. Create one in <a routerLink="/settings">Settings</a> to start chatting.</p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <mat-card>
+      <mat-card-header>
+        <mat-form-field appearance="outline" class="family-select">
+          <mat-label>Family</mat-label>
+          <mat-select [value]="selectedFamilyId()" (selectionChange)="selectFamily($event.value)">
+            @for (f of families(); track f.id) {
+              <mat-option [value]="f.id">{{ f.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="messages" #messagesContainer>
+          @for (msg of messages(); track msg.id) {
+            <div class="message" [class.own]="isOwnMessage(msg)">
+              <span class="sender">{{ msg.senderName }}</span>
+              <span class="text">{{ msg.text }}</span>
+              <span class="time">{{ msg.timestamp | date : 'short' }}</span>
+            </div>
+          }
+        </div>
+        <div class="send-row">
+          <mat-form-field appearance="outline" class="message-input">
+            <mat-label>Message</mat-label>
+            <input matInput [(ngModel)]="newMessage" (keydown.enter)="send()" placeholder="Type a message..." />
+          </mat-form-field>
+          <button mat-raised-button color="primary" [disabled]="!newMessage.trim() || sending" (click)="send()">
+            Send
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

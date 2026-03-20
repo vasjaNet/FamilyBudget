@@ -1,0 +1,16 @@
+<mat-toolbar color="primary">
+  <a mat-button routerLink="/">FamilyBudget</a>
+  <span class="spacer"></span>
+  @if (isAuthenticated) {
+    <a mat-button routerLink="/settings">Settings</a>
+    <a mat-button routerLink="/chat">Chat</a>
+    <span class="user">{{ username }}</span>
+    <button mat-button (click)="logout()">Logout</button>
+  } @else {
+    <a mat-button routerLink="/login">Login</a>
+    <a mat-button routerLink="/signup">Sign Up</a>
+  }
+</mat-toolbar>
+<main class="content">
+  <router-outlet></router-outlet>
+</main>
