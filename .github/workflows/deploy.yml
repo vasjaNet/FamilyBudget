@@ -62,23 +62,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Set up JDK 21
-        if: matrix.service == 'fb-userService'
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      - name: Setup Gradle
-        if: matrix.service == 'fb-userService'
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Build JAR for userService
-        if: matrix.service == 'fb-userService'
-        run: |
-          chmod +x ./gradlew
-          ./gradlew :fb-userService:bootJar -x test
-
       - name: Set image tag and ECR repository name
         id: set-vars
         run: |
