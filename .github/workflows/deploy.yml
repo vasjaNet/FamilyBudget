@@ -4,23 +4,49 @@ on:
   push:
     branches:
       - main
+      - master
   pull_request:
     branches:
       - main
+      - master
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag (optional, defaults to git SHA)'
+        required: false
+        default: ''
+      service:
+        description: 'Service to build (fb-webapp, fb-userService, or both)'
+        required: false
+        default: 'both'
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
-  ECR_REPOSITORY: fb-webapp
-  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
-  build-and-push:
-    name: Build & Push Docker Image ( ${{ matrix.service }} )
+  determine-matrix:
+    name: Determine Build Matrix
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          if [[ "${{ github.event.inputs.service }}" == "fb-webapp" ]]; then
+            echo 'matrix=["fb-webapp"]'
+          elif [[ "${{ github.event.inputs.service }}" == "fb-userService" ]]; then
+            echo 'matrix=["fb-userService"]'
+          else
+            echo 'matrix=["fb-webapp","fb-userService"]'
+          fi >> $GITHUB_OUTPUT
 
+  build-and-push:
+    name: Build & Push Docker Image (${{ matrix.service }})
+    needs: determine-matrix
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [ fb-webapp ]
+        service: ${{ fromJson(needs.determine-matrix.outputs.matrix) }}
       fail-fast: false
 
     steps:
@@ -34,16 +60,40 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # 3. Login to ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # 4. Build, tag, and push image
+      - name: Set up JDK 21
+        if: matrix.service == 'fb-userService'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        if: matrix.service == 'fb-userService'
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build JAR for userService
+        if: matrix.service == 'fb-userService'
+        run: |
+          chmod +x ./gradlew
+          ./gradlew :fb-userService:bootJar -x test
+
+      - name: Set image tag
+        id: set-tag
+        run: |
+          if [[ -n "${{ github.event.inputs.tag }}" ]]; then
+            echo "tag=${{ github.event.inputs.tag }}"
+          else
+            echo "tag=${{ github.sha }}"
+          fi >> $GITHUB_OUTPUT
+
       - name: Build, tag, and push image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: ${{ steps.set-tag.outputs.tag }}
         run: |
           docker build \
             -t $ECR_REGISTRY/${{ matrix.service }}:$IMAGE_TAG \
@@ -52,4 +102,4 @@ jobs:
 
           docker push $ECR_REGISTRY/${{ matrix.service }}:$IMAGE_TAG
           docker push $ECR_REGISTRY/${{ matrix.service }}:latest
-          echo "Image pushed: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          echo "Image pushed: $ECR_REGISTRY/${{ matrix.service }}:$IMAGE_TAG"
