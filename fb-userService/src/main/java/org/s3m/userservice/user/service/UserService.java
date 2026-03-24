@@ -25,10 +25,10 @@ public class UserService {
 
     @CachePut(value = "users", key = "#result.id")
     public UserResponse createUser(CreateUserRequest request, String changedBy) {
-        if (userRepository.existsByUsername(request.getUsername())) {
+        if (userRepository.existsByUsername(request.username())) {
             throw new IllegalArgumentException("Username already exists");
         }
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Email already exists");
         }
         User user = userMapper.mapToUser(request);
@@ -65,13 +65,13 @@ public class UserService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (!user.getEmail().equals(request.getEmail()) && userRepository.existsByEmail(request.getEmail())) {
+        if (!user.getEmail().equals(request.email()) && userRepository.existsByEmail(request.email())) {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        user.setEmail(request.getEmail());
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
+        user.setEmail(request.email());
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
         user.setUpdatedBy(changedBy);
 
         User updatedUser = userRepository.save(user);

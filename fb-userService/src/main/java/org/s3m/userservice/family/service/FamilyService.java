@@ -95,17 +95,17 @@ public class FamilyService {
         Family family = familyRepository.findById(familyId)
                 .orElseThrow(() -> new IllegalArgumentException("Family not found"));
 
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findById(request.userId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (familyMemberRepository.existsByFamilyIdAndUserId(familyId, request.getUserId())) {
+        if (familyMemberRepository.existsByFamilyIdAndUserId(familyId, request.userId())) {
             throw new IllegalArgumentException("User is already a member of this family");
         }
 
         FamilyMember member = FamilyMember.builder()
                 .familyId(familyId)
-                .userId(request.getUserId())
-                .role(request.getRole())
+                .userId(request.userId())
+                .role(request.role())
                 .createdBy(addedBy)
                 .build();
 
@@ -170,18 +170,13 @@ public class FamilyService {
     }
 
     private FamilyResponse buildFamilyResponse(Family family) {
-        FamilyResponse response = familyMapper.mapToResponse(family);
-
         // Get owner username
         User owner = userRepository.findById(family.getOwnerId()).orElse(null);
-        if (owner != null) {
-            response.setOwnerUsername(owner.getUsername());
-        }
+        String ownerUsername = owner != null ? owner.getUsername() : "Unknown";
 
         // Get member count
         int memberCount = familyMemberRepository.findByFamilyId(family.getId()).size();
-        response.setMemberCount(memberCount);
 
-        return response;
+        return familyMapper.mapToResponse(family, ownerUsername, memberCount);
     }
 }
