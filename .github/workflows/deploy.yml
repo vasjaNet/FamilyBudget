@@ -3,11 +3,9 @@ name: Build and Push to AWS ECR
 on:
   push:
     branches:
-      - main
       - master
   pull_request:
     branches:
-      - main
       - master
   workflow_dispatch:
     inputs:
@@ -81,25 +79,34 @@ jobs:
           chmod +x ./gradlew
           ./gradlew :fb-userService:bootJar -x test
 
-      - name: Set image tag
-        id: set-tag
+      - name: Set image tag and ECR repository name
+        id: set-vars
         run: |
+          # Set image tag
           if [[ -n "${{ github.event.inputs.tag }}" ]]; then
             echo "tag=${{ github.event.inputs.tag }}"
           else
             echo "tag=${{ github.sha }}"
           fi >> $GITHUB_OUTPUT
 
+          # Map service directory to ECR repository name (lowercase with hyphens)
+          if [[ "${{ matrix.service }}" == "fb-userService" ]]; then
+            echo "ecr_repo=fb-user-service"
+          else
+            echo "ecr_repo=${{ matrix.service }}"
+          fi >> $GITHUB_OUTPUT
+
       - name: Build, tag, and push image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ steps.set-tag.outputs.tag }}
+          IMAGE_TAG: ${{ steps.set-vars.outputs.tag }}
+          ECR_REPO: ${{ steps.set-vars.outputs.ecr_repo }}
         run: |
           docker build \
-            -t $ECR_REGISTRY/${{ matrix.service }}:$IMAGE_TAG \
-            -t $ECR_REGISTRY/${{ matrix.service }}:latest \
+            -t $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG \
+            -t $ECR_REGISTRY/$ECR_REPO:latest \
             ./${{ matrix.service }}
 
-          docker push $ECR_REGISTRY/${{ matrix.service }}:$IMAGE_TAG
-          docker push $ECR_REGISTRY/${{ matrix.service }}:latest
-          echo "Image pushed: $ECR_REGISTRY/${{ matrix.service }}:$IMAGE_TAG"
+          docker push $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPO:latest
+          echo "Image pushed: $ECR_REGISTRY/$ECR_REPO:$IMAGE_TAG"
