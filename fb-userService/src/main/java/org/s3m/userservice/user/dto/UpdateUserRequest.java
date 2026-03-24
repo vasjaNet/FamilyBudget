@@ -1,14 +1,7 @@
 package org.s3m.userservice.user.dto;
 
-import lombok.*;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class UpdateUserRequest {
-    private String email;
-    private String firstName;
-    private String lastName;
-}
-
+public record UpdateUserRequest(
+    String email,
+    String firstName,
+    String lastName
+) {}
