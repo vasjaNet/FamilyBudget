@@ -2,8 +2,9 @@ name: Sonar Analysis
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
+    branches: [ master ]
 
 jobs:
   sonar:
@@ -18,9 +19,13 @@ jobs:
         with:
           node-version: 20
 
-      - run: npm install
+      - name: Install dependencies
+        working-directory: fb-webapp
+        run: npm install
 
-      - run: npm run build
+      - name: Build Angular app
+        working-directory: fb-webapp
+        run: npm run build
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
