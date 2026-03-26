@@ -133,7 +133,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: fb-webapp
-        run: npm ci
+        run: npm install
 
       - name: Run ESLint
         working-directory: fb-webapp
