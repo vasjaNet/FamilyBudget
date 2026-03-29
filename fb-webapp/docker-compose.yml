@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # The frontend Angular application
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      # Connects `/api` proxy config in Nginx out to the backend container.
+      - BACKEND_URL=http://backend:8080
+    depends_on:
+      - backend
+
+  # Example setup for the backend services. Replace image and settings with your actual configuration.
+  backend:
+    image: my-backend-image:latest # REPLACE WITH YOUR BACKEND IMAGE (Or build block)
+    ports:
+      - "8080:8080"
+    # Example to build backend from source:
+    # build:
+    #   context: ../fb-backend
+    #   dockerfile: Dockerfile

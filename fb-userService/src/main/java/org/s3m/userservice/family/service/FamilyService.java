@@ -33,7 +33,7 @@ public class FamilyService {
         Family savedFamily = familyRepository.save(family);
 
         FamilyMember ownerMember = FamilyMember.builder()
-                .familyId(savedFamily.getId())
+                .family(savedFamily)
                 .userId(ownerId)
                 .role(FamilyMember.FamilyRole.OWNER)
                 .createdBy(createdBy)
@@ -103,7 +103,7 @@ public class FamilyService {
         }
 
         FamilyMember member = FamilyMember.builder()
-                .familyId(familyId)
+                .family(family)
                 .userId(request.userId())
                 .role(request.role())
                 .createdBy(addedBy)

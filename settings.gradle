@@ -4,4 +4,5 @@ include 'fb-commons-lib'
 include 'fb-userService'
 include 'fb-chatService'
 include 'fb-webapp'
+include 'fb-relationService'
 

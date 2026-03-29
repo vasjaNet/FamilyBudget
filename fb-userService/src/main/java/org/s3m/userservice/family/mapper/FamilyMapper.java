@@ -11,14 +11,13 @@ import org.s3m.userservice.family.entity.Family;
 @Mapper
 public interface FamilyMapper {
 
-    @Mapping(target = "ownerUsername", source = "ownerUsername")
-    @Mapping(target = "memberCount", source = "memberCount")
     FamilyResponse mapToResponse(Family family, String ownerUsername, int memberCount);
 
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "ownerId", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "familyMembers", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     Family mapToEntity(CreateFamilyRequest request);
@@ -27,6 +26,7 @@ public interface FamilyMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "ownerId", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "familyMembers", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     void mapToEntity(UpdateFamilyRequest request, @MappingTarget Family family);

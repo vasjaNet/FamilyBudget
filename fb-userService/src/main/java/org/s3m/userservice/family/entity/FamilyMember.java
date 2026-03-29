@@ -17,8 +17,9 @@ public class FamilyMember {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "family_id", nullable = false)
-    private UUID familyId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "family_id", nullable = false)
+    private Family family;
 
     @Column(name = "user_id", nullable = false)
     private UUID userId;
