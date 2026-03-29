@@ -8,9 +8,9 @@ on:
         required: false
         default: ''
       service:
-        description: 'Service to build (fb-webapp, fb-userService, or both)'
+        description: 'Service to build (fb-webapp, fb-userService, fb-relationService, or both/all)'
         required: false
-        default: 'both'
+        default: 'all'
 
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -28,8 +28,10 @@ jobs:
             echo 'matrix=["fb-webapp"]'
           elif [[ "${{ github.event.inputs.service }}" == "fb-userService" ]]; then
             echo 'matrix=["fb-userService"]'
+          elif [[ "${{ github.event.inputs.service }}" == "fb-relationService" ]]; then
+            echo 'matrix=["fb-relationService"]'
           else
-            echo 'matrix=["fb-webapp","fb-userService"]'
+            echo 'matrix=["fb-webapp","fb-userService","fb-relationService"]'
           fi >> $GITHUB_OUTPUT
 
   build-and-push:
@@ -57,21 +59,21 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Set up JDK 21
-        if: matrix.service == 'fb-userService'
+        if: matrix.service == 'fb-userService' || matrix.service == 'fb-relationService'
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle
-        if: matrix.service == 'fb-userService'
+        if: matrix.service == 'fb-userService' || matrix.service == 'fb-relationService'
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build JAR for userService
-        if: matrix.service == 'fb-userService'
+      - name: Build JAR for Java services
+        if: matrix.service == 'fb-userService' || matrix.service == 'fb-relationService'
         run: |
           chmod +x ./gradlew
-          ./gradlew :fb-userService:bootJar -x test
+          ./gradlew :${{ matrix.service }}:bootJar -x test
 
       - name: Set image tag and ECR repository name
         id: set-vars
@@ -86,6 +88,8 @@ jobs:
           # Map service directory to ECR repository name (lowercase with hyphens)
           if [[ "${{ matrix.service }}" == "fb-userService" ]]; then
             echo "ecr_repo=fb-user-service"
+          elif [[ "${{ matrix.service }}" == "fb-relationService" ]]; then
+            echo "ecr_repo=fb-relation-service"
           else
             echo "ecr_repo=${{ matrix.service }}"
           fi >> $GITHUB_OUTPUT

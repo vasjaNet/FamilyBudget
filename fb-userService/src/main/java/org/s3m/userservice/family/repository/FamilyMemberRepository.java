@@ -16,10 +16,10 @@ public interface FamilyMemberRepository extends JpaRepository<FamilyMember, UUID
 
     boolean existsByFamilyIdAndUserId(UUID familyId, UUID userId);
 
-    @Query("SELECT fm FROM FamilyMember fm WHERE fm.familyId = :familyId AND fm.userId = :userId AND fm.role = :role")
+    @Query("SELECT fm FROM FamilyMember fm WHERE fm.family.id = :familyId AND fm.userId = :userId AND fm.role = :role")
     Optional<FamilyMember> findByFamilyIdAndUserIdAndRole(UUID familyId, UUID userId, FamilyMember.FamilyRole role);
 
-    @Query("SELECT fm FROM FamilyMember fm WHERE fm.familyId = :familyId AND fm.userId = :userId AND fm.role IN ('OWNER', 'FULL_ACCESS')")
+    @Query("SELECT fm FROM FamilyMember fm WHERE fm.family.id = :familyId AND fm.userId = :userId AND fm.role IN ('OWNER', 'FULL_ACCESS')")
     List<FamilyMember> findFullAccessMembers(UUID familyId, UUID userId);
 
     void deleteByFamilyIdAndUserId(UUID familyId, UUID userId);

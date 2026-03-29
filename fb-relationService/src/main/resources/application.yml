@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: fb-relationService
+  data:
+  neo4j:
+    uri: neo4j://localhost:7687
+    authentication:
+      username: ${NEO4J_USERNAME:neo4j}
+      password: ${NEO4J_PASSWORD:neo4j}
+
+server:
+  port: 8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
