@@ -77,6 +77,7 @@ module.exports = [
       'node_modules/',
       '.angular/',
       'coverage/',
+      '**/*.html',
     ],
   },
 ];

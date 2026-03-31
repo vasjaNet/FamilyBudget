@@ -1,21 +1,18 @@
+import { inject } from '@angular/core';
 import { type CanActivateFn } from '@angular/router';
+import { KeycloakService } from 'keycloak-angular';
 
-// Temporarily disabled for anonymous access
-// import { inject } from '@angular/core';
-// import { Router, type CanActivateFn } from '@angular/router';
-// import { AuthService } from '../services/auth.service';
+export const authGuard: CanActivateFn = async (route, state) => {
+  const keycloak = inject(KeycloakService);
 
-export const authGuard: CanActivateFn = (route, state) => {
-  // Temporarily allow all access - authentication disabled
-  return true;
+  const isAuthenticated = await keycloak.isLoggedIn();
 
-  /* Original auth guard:
-  const auth = inject(AuthService);
-  const router = inject(Router);
-  if (auth.isAuthenticated()) {
+  if (isAuthenticated) {
     return true;
   }
-  router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+
+  await keycloak.login({
+    redirectUri: window.location.origin + state.url,
+  });
   return false;
-  */
 };

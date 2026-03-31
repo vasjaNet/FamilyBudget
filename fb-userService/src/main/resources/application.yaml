@@ -37,9 +37,12 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+    oauth:
+      client-id: fb-webapp-client
+      use-pkce-with-authorization-code-grant: true
 
 server:
-  port: 8080
+  port: 8081
 
 management:
   endpoint:
@@ -57,3 +60,12 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+
+---
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/my-realm}
+#          jwk-set-uri: ${KEYCLOAK_JWK_URI:http://localhost:8080/realms/my-realm/protocol/openid-connect/certs}
