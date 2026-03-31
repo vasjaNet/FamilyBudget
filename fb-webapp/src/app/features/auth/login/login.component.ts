@@ -1,60 +1,55 @@
-import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    RouterLink,
-  ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  imports: [MatCardModule, MatButtonModule],
+  template: `
+    <div class="login-container">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Sign In</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>Please sign in to access your family budget.</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="login()">
+            Sign In with Keycloak
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  `,
+  styles: [`
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    mat-card {
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    mat-card-actions {
+      justify-content: center;
+      padding-bottom: 16px;
+    }
+  `],
 })
 export class LoginComponent {
-  form: FormGroup;
-  loading = false;
+  private readonly auth = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
 
-  constructor(
-    private fb: FormBuilder,
-    private auth: AuthService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private snackBar: MatSnackBar
-  ) {
-    this.form = this.fb.nonNullable.group({
-      username: ['', [Validators.required]],
-      password: ['', [Validators.required]],
-    });
-  }
-
-  onSubmit(): void {
-    if (this.form.invalid || this.loading) return;
-    this.loading = true;
-    this.auth.login(this.form.getRawValue()).subscribe({
-      next: () => {
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] ?? '/settings';
-        this.router.navigateByUrl(returnUrl);
-      },
-      error: (err) => {
-        this.loading = false;
-        this.snackBar.open(err?.error?.message ?? err?.message ?? 'Login failed', 'Close', { duration: 5000 });
-      },
-      complete: () => (this.loading = false),
-    });
+  async login(): Promise<void> {
+    const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/settings';
+    await this.auth.login(window.location.origin + returnUrl);
   }
 }

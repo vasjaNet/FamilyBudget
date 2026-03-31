@@ -13,7 +13,7 @@ export class ChatService {
     const user = this.auth.getCurrentUser();
     return of([
       {
-        id: '1',
+        id: _familyId,
         senderId: 'other',
         senderName: 'Family Member',
         text: 'Welcome to the family chat!',

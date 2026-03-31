@@ -14,13 +14,13 @@ public class AppConfig implements WebMvcConfigurer {
         return new ObjectMapper();
     }
 
-    @Override
+    /*@Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
                 .allowedOrigins("http://localhost:4200")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
-    }
+    }*/
 }
 

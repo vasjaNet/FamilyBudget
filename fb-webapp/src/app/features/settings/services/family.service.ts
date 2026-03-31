@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 import type {
   Family,
@@ -17,7 +17,6 @@ const API = `${environment.apiBaseUrl}${environment.apiPrefix}`;
 export class FamilyService {
   private readonly http = inject(HttpClient);
 
-  /** List families for the current user. When backend has GET /families, use it. */
   getMyFamilies(): Observable<Family[]> {
     return this.http.get<{ data: Family[] }>(`${API}/families`)
       .pipe(map(r => r.data ?? []));
@@ -25,8 +24,8 @@ export class FamilyService {
 
   /** Create a family. When backend has POST /families, use it. */
   createFamily(request: CreateFamilyRequest): Observable<Family> {
-    // When FamilyController exists: return this.http.post<{ data: Family }>(`${API}/families`, request).pipe(map(r => r.data!));
-    const stub: Family = {
+   return this.http.post<{ data: Family }>(`${API}/families`, request).pipe(map(r => r.data!));
+   /* const stub: Family = {
       id: 'stub-' + Date.now(),
       name: request.name,
       description: request.description ?? '',
@@ -35,7 +34,7 @@ export class FamilyService {
       updatedAt: new Date().toISOString(),
       memberCount: 1,
     };
-    return of(stub);
+    return of(stub);*/
   }
 
   /** Update a family. When backend has PUT /families/:id, use it. */
