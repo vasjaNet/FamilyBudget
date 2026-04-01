@@ -1,0 +1,91 @@
+{{- range $name, $svc := .Values.services }}
+{{- if $svc.enabled }}
+{{- $svcName := $name | kebabcase }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ $svcName }}
+  labels:
+    {{- include "family-budget.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ $svcName }}
+spec:
+  replicas: {{ $svc.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $svcName }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ $svcName }}
+        app.kubernetes.io/instance: {{ $.Release.Name }}
+    spec:
+      containers:
+        - name: {{ $svcName }}
+          image: {{ include "family-budget.image" (dict "Values" $.Values "imageName" $svc.image) }}
+          imagePullPolicy: {{ $.Values.global.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ $svc.port }}
+              protocol: TCP
+          {{- /* Health probes for Java Spring Boot services */}}
+          {{- if $svc.actuator }}
+          livenessProbe:
+            httpGet:
+              path: {{ $svc.actuator.livenessPath }}
+              port: {{ $svc.actuator.httpPort }}
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: {{ $svc.actuator.readinessPath }}
+              port: {{ $svc.actuator.httpPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          {{- end }}
+          env:
+            {{- if eq $name "userService" }}
+            - name: DB_HOST
+              value: "{{ $.Release.Name }}-postgres"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Release.Name }}-secrets
+                  key: postgres-username
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Release.Name }}-secrets
+                  key: postgres-password
+            - name: REDIS_HOST
+              value: "{{ $.Release.Name }}-redis"
+            - name: KEYCLOAK_ISSUER_URI
+              value: "http://{{ $.Release.Name }}-keycloak:8080/realms/my-realm"
+            {{- else if eq $name "relationService" }}
+            - name: NEO4J_URI
+              value: "neo4j://{{ $.Release.Name }}-neo4j:7687"
+            - name: NEO4J_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Release.Name }}-secrets
+                  key: neo4j-username
+            - name: NEO4J_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Release.Name }}-secrets
+                  key: neo4j-password
+            {{- else if eq $name "webapp" }}
+            - name: BACKEND_URL
+              {{- if $svc.backendUrl }}
+              value: {{ $svc.backendUrl }}
+              {{- else }}
+              value: "http://{{ $.Release.Name }}-user-service:{{ index $.Values.services "userService" "port" }}"
+              {{- end }}
+            {{- end }}
+          resources:
+            {{- toYaml $svc.resources | nindent 12 }}
+{{- end }}
+{{- end }}

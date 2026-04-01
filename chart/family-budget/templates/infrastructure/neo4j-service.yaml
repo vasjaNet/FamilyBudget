@@ -1,0 +1,23 @@
+{{- if .Values.infra.neo4j.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-neo4j
+  labels:
+    {{- include "family-budget.labels" . | nindent 4 }}
+    app.kubernetes.io/component: neo4j
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: neo4j
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: bolt
+      port: 7687
+      targetPort: bolt
+      protocol: TCP
+    - name: http
+      port: 7474
+      targetPort: http
+      protocol: TCP
+{{- end }}

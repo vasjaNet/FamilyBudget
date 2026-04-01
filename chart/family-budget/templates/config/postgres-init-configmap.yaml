@@ -1,0 +1,25 @@
+{{- if .Values.infra.postgres.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-postgres-initdb
+  labels:
+    {{- include "family-budget.labels" . | nindent 4 }}
+data:
+  init.sql: |
+    CREATE EXTENSION IF NOT EXISTS pgcrypto;
+    CREATE TABLE IF NOT EXISTS public.flyway_schema_history (
+      installed_rank INTEGER NOT NULL,
+      version VARCHAR(50),
+      description VARCHAR(255) NOT NULL,
+      type VARCHAR(20) NOT NULL,
+      script VARCHAR(1000) NOT NULL,
+      checksum INTEGER,
+      installed_by VARCHAR(100) NOT NULL,
+      installed_on TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      execution_time INTEGER NOT NULL,
+      success BOOLEAN NOT NULL,
+      PRIMARY KEY (installed_rank)
+    );
+    CREATE INDEX IF NOT EXISTS idx_flyway_success ON public.flyway_schema_history(success);
+{{- end }}
