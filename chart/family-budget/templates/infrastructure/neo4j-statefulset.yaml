@@ -1,0 +1,72 @@
+{{- if .Values.infra.neo4j.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-neo4j
+  labels:
+    {{- include "family-budget.labels" . | nindent 4 }}
+    app.kubernetes.io/component: neo4j
+spec:
+  serviceName: {{ .Release.Name }}-neo4j
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: neo4j
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: neo4j
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: neo4j
+          image: {{ .Values.infra.neo4j.image }}
+          ports:
+            - name: bolt
+              containerPort: 7687
+              protocol: TCP
+            - name: http
+              containerPort: 7474
+              protocol: TCP
+          env:
+            - name: NEO4J_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secrets
+                  key: neo4j-auth
+            - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
+              value: "yes"
+            - name: NEO4J_dbms_security_auth__enabled
+              value: "true"
+          livenessProbe:
+            httpGet:
+              path: /browser
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /browser
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            {{- toYaml .Values.infra.neo4j.resources | nindent 12 }}
+      {{- if .Values.infra.neo4j.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        {{- if .Values.infra.neo4j.persistence.storageClass }}
+        storageClassName: {{ .Values.infra.neo4j.persistence.storageClass }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.infra.neo4j.persistence.size }}
+  {{- end }}
+{{- end }}

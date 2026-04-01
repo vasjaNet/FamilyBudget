@@ -1,0 +1,157 @@
+global:
+  image:
+    registry: ""
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  namespace: default
+
+infra:
+  postgres:
+    enabled: true
+    image: postgres:17.8-alpine3.23
+    database: family_budget_user
+    persistence:
+      enabled: true
+      size: 8Gi
+      storageClass: ""
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+  redis:
+    enabled: true
+    image: redis:8.4
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 250m
+        memory: 128Mi
+  neo4j:
+    enabled: true
+    image: neo4j:latest
+    persistence:
+      enabled: true
+      size: 1Gi
+      storageClass: ""
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+
+services:
+  userService:
+    enabled: true
+    replicas: 1
+    image: fb-user-service
+    port: 8081
+    actuator:
+      livenessPath: /actuator/health/liveness
+      readinessPath: /actuator/health/readiness
+      httpPort: 8081
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+  relationService:
+    enabled: true
+    replicas: 1
+    image: fb-relation-service
+    port: 8082
+    actuator:
+      livenessPath: /actuator/health/liveness
+      readinessPath: /actuator/health/readiness
+      httpPort: 8082
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+  webapp:
+    enabled: true
+    replicas: 1
+    image: fb-webapp
+    port: 80
+    backendUrl: ""
+    resources:
+      requests:
+        cpu: 64m
+        memory: 64Mi
+      limits:
+        cpu: 128m
+        memory: 128Mi
+  chatService:
+    enabled: true
+    replicas: 1
+    image: fb-chat-service
+    port: 8081
+    actuator:
+      livenessPath: /actuator/health/liveness
+      readinessPath: /actuator/health/readiness
+      httpPort: 8081
+    resources:
+      requests:
+        cpu: 125m
+        memory: 256Mi
+      limits:
+        cpu: 250m
+        memory: 512Mi
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "60"
+  hosts:
+    - host: ""
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service: webapp
+            port: 80
+        - path: /api/v1/users
+          pathType: Prefix
+          backend:
+            service: user-service
+            port: 8081
+        - path: /api/v1/families
+          pathType: Prefix
+          backend:
+            service: user-service
+            port: 8081
+        - path: /api/v1/relations
+          pathType: Prefix
+          backend:
+            service: relation-service
+            port: 8082
+        - path: /api/v1/chats
+          pathType: Prefix
+          backend:
+            service: chat-service
+            port: 8081
+  tls: []
+
+secrets:
+  postgres:
+    username: postgres
+    password: postgres
+  neo4j:
+    password: Lanos2005
+
+monitoring:
+  enabled: true
+  namespace: monitoring
