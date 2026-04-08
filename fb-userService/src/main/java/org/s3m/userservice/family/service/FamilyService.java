@@ -171,8 +171,8 @@ public class FamilyService {
 
     private FamilyResponse buildFamilyResponse(Family family) {
         // Get owner username
-        User owner = userRepository.findById(family.getOwnerId()).orElse(null);
-        String ownerUsername = owner != null ? owner.getUsername() : "Unknown";
+        User owner = userRepository.findById(family != null ? family.getOwnerId(): null).orElse(new User());
+        String ownerUsername =  owner.getUsername();
 
         // Get member count
         int memberCount = familyMemberRepository.findByFamilyId(family.getId()).size();
