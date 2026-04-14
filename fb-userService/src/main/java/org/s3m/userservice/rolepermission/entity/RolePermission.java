@@ -20,16 +20,15 @@ import java.time.LocalDateTime;
 @Builder
 public class RolePermission {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private java.util.UUID id;
+    @EmbeddedId
+    private RolePermissionId id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", nullable = false)
+    @ManyToOne
+    @MapsId("roleId")
     private Role role;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "permission_id", nullable = false)
+    @ManyToOne
+    @MapsId("permissionId")
     private Permission permission;
 
     @CreationTimestamp

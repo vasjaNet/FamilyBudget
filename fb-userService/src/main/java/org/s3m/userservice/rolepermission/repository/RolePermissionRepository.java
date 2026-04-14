@@ -1,6 +1,7 @@
 package org.s3m.userservice.rolepermission.repository;
 
 import org.s3m.userservice.rolepermission.entity.RolePermission;
+import org.s3m.userservice.rolepermission.entity.RolePermissionId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,16 +10,16 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface RolePermissionRepository extends JpaRepository<RolePermission, UUID> {
+public interface RolePermissionRepository extends JpaRepository<RolePermission, RolePermissionId> {
 
-    Optional<RolePermission> findByRoleIdAndPermissionId(UUID roleId, UUID permissionId);
+    Optional<RolePermission> findById(RolePermissionId id);
 
-    List<RolePermission> findByRoleId(UUID roleId);
+    List<RolePermission> findById_RoleId(UUID roleId);
 
-    List<RolePermission> findByPermissionId(UUID permissionId);
+    List<RolePermission> findById_PermissionId(UUID permissionId);
 
-    boolean existsByRoleIdAndPermissionId(UUID roleId, UUID permissionId);
+    boolean existsById(RolePermissionId id);
 
-    void deleteByRoleIdAndPermissionId(UUID roleId, UUID permissionId);
+    void deleteById(RolePermissionId id);
 
 }

@@ -8,6 +8,7 @@ import org.s3m.userservice.role.repository.RoleRepository;
 import org.s3m.userservice.rolepermission.dto.CreateRolePermissionRequest;
 import org.s3m.userservice.rolepermission.dto.RolePermissionResponse;
 import org.s3m.userservice.rolepermission.entity.RolePermission;
+import org.s3m.userservice.rolepermission.entity.RolePermissionId;
 import org.s3m.userservice.rolepermission.mapper.RolePermissionMapper;
 import org.s3m.userservice.rolepermission.repository.RolePermissionRepository;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,7 +30,7 @@ public class RolePermissionService {
     private final RolePermissionMapper rolePermissionMapper;
 
     public RolePermissionResponse assignPermissionToRole(CreateRolePermissionRequest request, String changedBy) {
-        if (rolePermissionRepository.existsByRoleIdAndPermissionId(request.roleId(), request.permissionId())) {
+        if (rolePermissionRepository.existsById(new RolePermissionId(request.roleId(), request.permissionId()))) {
             throw new IllegalArgumentException("Permission is already assigned to this role");
         }
 
@@ -38,10 +39,9 @@ public class RolePermissionService {
 
         Permission permission = permissionRepository.findById(request.permissionId())
                 .orElseThrow(() -> new IllegalArgumentException("Permission not found"));
-
+        RolePermissionId id = new RolePermissionId(role.getId(), permission.getId());
         RolePermission rolePermission = RolePermission.builder()
-                .role(role)
-                .permission(permission)
+                .id(id)
                 .createdBy(changedBy)
                 .updatedBy(changedBy)
                 .build();
@@ -50,31 +50,31 @@ public class RolePermissionService {
         return rolePermissionMapper.mapToResponse(savedRolePermission);
     }
 
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     @Cacheable(value = "rolePermissions", key = "#rolePermissionId")
     public RolePermissionResponse getRolePermissionById(UUID rolePermissionId) {
         RolePermission rolePermission = rolePermissionRepository.findById(rolePermissionId)
                 .orElseThrow(() -> new IllegalArgumentException("Role-Permission relationship not found"));
         return rolePermissionMapper.mapToResponse(rolePermission);
-    }
+    }*/
 
     @Transactional(readOnly = true)
     public RolePermissionResponse getRolePermissionByRoleAndPermission(UUID roleId, UUID permissionId) {
-        RolePermission rolePermission = rolePermissionRepository.findByRoleIdAndPermissionId(roleId, permissionId)
+        RolePermission rolePermission = rolePermissionRepository.findById(new RolePermissionId(roleId, permissionId))
                 .orElseThrow(() -> new IllegalArgumentException("Role-Permission relationship not found"));
         return rolePermissionMapper.mapToResponse(rolePermission);
     }
 
     @Transactional(readOnly = true)
     public List<RolePermissionResponse> getRolePermissionsByRoleId(UUID roleId) {
-        return rolePermissionRepository.findByRoleId(roleId).stream()
+        return rolePermissionRepository.findById_RoleId(roleId).stream()
                 .map(rolePermissionMapper::mapToResponse)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public List<RolePermissionResponse> getRolePermissionsByPermissionId(UUID permissionId) {
-        return rolePermissionRepository.findByPermissionId(permissionId).stream()
+        return rolePermissionRepository.findById_PermissionId(permissionId).stream()
                 .map(rolePermissionMapper::mapToResponse)
                 .toList();
     }
@@ -86,16 +86,16 @@ public class RolePermissionService {
                 .toList();
     }
 
-    @CacheEvict(value = "rolePermissions", key = "#rolePermissionId")
+    /*@CacheEvict(value = "rolePermissions", key = "#rolePermissionId")
     public void removePermissionFromRole(UUID rolePermissionId, String changedBy) {
         RolePermission rolePermission = rolePermissionRepository.findById(rolePermissionId)
                 .orElseThrow(() -> new IllegalArgumentException("Role-Permission relationship not found"));
         rolePermissionRepository.delete(rolePermission);
-    }
+    }*/
 
     @CacheEvict(value = "rolePermissions", allEntries = true)
     public void removePermissionFromRoleByIds(UUID roleId, UUID permissionId, String changedBy) {
-        RolePermission rolePermission = rolePermissionRepository.findByRoleIdAndPermissionId(roleId, permissionId)
+        RolePermission rolePermission = rolePermissionRepository.findById(new RolePermissionId(roleId, permissionId))
                 .orElseThrow(() -> new IllegalArgumentException("Role-Permission relationship not found"));
         rolePermissionRepository.delete(rolePermission);
     }
