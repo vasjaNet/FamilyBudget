@@ -1,6 +1,8 @@
 package org.s3m.userservice.usertenant.service;
 
 import lombok.AllArgsConstructor;
+import org.s3m.userservice.role.entity.Role;
+import org.s3m.userservice.role.repository.RoleRepository;
 import org.s3m.userservice.tenant.entity.Tenant;
 import org.s3m.userservice.tenant.repository.TenantRepository;
 import org.s3m.userservice.usertenant.dto.CreateUserTenantRequest;
@@ -26,6 +28,7 @@ public class UserTenantService {
     private final UserTenantRepository userTenantRepository;
     private final UserRepository userRepository;
     private final TenantRepository tenantRepository;
+    private final RoleRepository roleRepository;
     private final UserTenantMapper userTenantMapper;
 
     public UserTenantResponse assignUserToTenant(CreateUserTenantRequest request, String changedBy) {
@@ -39,9 +42,13 @@ public class UserTenantService {
         Tenant tenant = tenantRepository.findById(request.tenantId())
                 .orElseThrow(() -> new IllegalArgumentException("Tenant not found"));
 
+        Role role = roleRepository.findById(request.roleId())
+                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
+
         UserTenant userTenant = UserTenant.builder()
                 .user(user)
                 .tenant(tenant)
+                .userRole(role)
                 .createdBy(changedBy)
                 .build();
 

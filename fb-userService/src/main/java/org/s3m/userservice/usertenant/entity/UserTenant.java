@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.s3m.userservice.role.entity.Role;
 import org.s3m.userservice.tenant.entity.Tenant;
 import org.s3m.userservice.user.entity.User;
 
@@ -29,6 +30,10 @@ public class UserTenant {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tenant_id", nullable = false)
     private Tenant tenant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id")
+    private Role userRole;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

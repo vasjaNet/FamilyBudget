@@ -9,6 +9,8 @@ public record UserTenantResponse(
     String userUsername,
     UUID tenantId,
     String tenantName,
+    UUID roleId,
+    String roleName,
     LocalDateTime createdAt,
     LocalDateTime updatedAt,
     String createdBy,
