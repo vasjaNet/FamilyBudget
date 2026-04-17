@@ -16,8 +16,10 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "userTenants", ignore = true)
     User mapToUser(CreateUserRequest request);
 
+    @Mapping(target = "userTenants", ignore = true)
     User mapToUser(UserResponse response);
 
 }

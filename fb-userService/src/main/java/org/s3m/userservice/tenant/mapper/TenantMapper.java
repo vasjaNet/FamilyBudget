@@ -18,6 +18,7 @@ public interface TenantMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "userTenants", ignore = true)
     Tenant mapToEntity(CreateTenantRequest request);
 
     @Mapping(target = "updatedBy", ignore = true)
@@ -25,6 +26,7 @@ public interface TenantMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "userTenants", ignore = true)
     void mapToEntity(UpdateTenantRequest request, @MappingTarget Tenant tenant);
 
 }

@@ -13,12 +13,15 @@ public interface UserTenantMapper {
     @Mapping(target = "userUsername", source = "user.username")
     @Mapping(target = "tenantId", source = "tenant.id")
     @Mapping(target = "tenantName", source = "tenant.name")
+    @Mapping(target = "roleId", source = "userRole.id")
+    @Mapping(target = "roleName", source = "userRole.name")
     UserTenantResponse mapToResponse(UserTenant userTenant);
 
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "tenant", ignore = true)
+    @Mapping(target = "userRole", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
