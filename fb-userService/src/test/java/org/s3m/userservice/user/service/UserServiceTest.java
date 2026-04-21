@@ -137,7 +137,7 @@ class UserServiceTest {
         given(userMapper.mapToResponse(savedUser)).willReturn(expectedResponse);
 
         // When
-        UserResponse result = userService.createUser(createUserRequest, "admin");
+        UserResponse result = userService.createUser(createUserRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -153,7 +153,7 @@ class UserServiceTest {
         given(userRepository.existsByUsername("newuser")).willReturn(true);
 
         // When & Then
-        assertThatThrownBy(() -> userService.createUser(createUserRequest, "admin"))
+        assertThatThrownBy(() -> userService.createUser(createUserRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Username already exists");
 
@@ -168,7 +168,7 @@ class UserServiceTest {
         given(userRepository.existsByEmail("newuser@example.com")).willReturn(true);
 
         // When & Then
-        assertThatThrownBy(() -> userService.createUser(createUserRequest, "admin"))
+        assertThatThrownBy(() -> userService.createUser(createUserRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Email already exists");
 
@@ -318,7 +318,7 @@ class UserServiceTest {
         given(userMapper.mapToResponse(updatedUser)).willReturn(updatedResponse);
 
         // When
-        UserResponse result = userService.updateUser(testUserId, updateUserRequest, "admin");
+        UserResponse result = userService.updateUser(testUserId, updateUserRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -335,7 +335,7 @@ class UserServiceTest {
         given(userRepository.existsByEmail("updated@example.com")).willReturn(true);
 
         // When & Then
-        assertThatThrownBy(() -> userService.updateUser(testUserId, updateUserRequest, "admin"))
+        assertThatThrownBy(() -> userService.updateUser(testUserId, updateUserRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Email already exists");
 
@@ -349,7 +349,7 @@ class UserServiceTest {
         given(userRepository.findById(testUserId)).willReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> userService.updateUser(testUserId, updateUserRequest, "admin"))
+        assertThatThrownBy(() -> userService.updateUser(testUserId, updateUserRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("User not found");
     }
@@ -361,7 +361,7 @@ class UserServiceTest {
         given(userRepository.findById(testUserId)).willReturn(Optional.of(testUser));
 
         // When
-        userService.deleteUser(testUserId, "admin");
+        userService.deleteUser(testUserId);
 
         // Then
         verify(userRepository).delete(testUser);
@@ -374,7 +374,7 @@ class UserServiceTest {
         given(userRepository.findById(testUserId)).willReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> userService.deleteUser(testUserId, "admin"))
+        assertThatThrownBy(() -> userService.deleteUser(testUserId))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("User not found");
 

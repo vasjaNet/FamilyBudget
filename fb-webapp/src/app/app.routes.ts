@@ -20,5 +20,11 @@ export const routes: Routes = [
       import('./features/chat/chat.component').then((m) => m.ChatComponent),
     canActivate: [authGuard],
   },
+  {
+    path: 'users',
+    loadComponent: () =>
+      import('./features/users/users.component').then((m) => m.UsersComponent),
+    canActivate: [authGuard],
+  },
   { path: '**', redirectTo: '' },
 ];

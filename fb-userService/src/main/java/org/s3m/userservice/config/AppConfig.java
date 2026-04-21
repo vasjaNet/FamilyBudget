@@ -3,9 +3,11 @@ package org.s3m.userservice.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@EnableJpaAuditing
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
 
@@ -14,13 +16,5 @@ public class AppConfig implements WebMvcConfigurer {
         return new ObjectMapper();
     }
 
-    /*@Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:4200")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }*/
 }
 

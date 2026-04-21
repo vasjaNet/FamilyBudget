@@ -20,6 +20,7 @@ export class AuthService {
       email: tokenParsed['email'] || '',
       firstName: tokenParsed['given_name'] || '',
       lastName: tokenParsed['family_name'] || '',
+      status: 'ACTIVE',
     };
   }
 

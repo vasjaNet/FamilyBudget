@@ -3,6 +3,7 @@
   <span class="spacer"></span>
   @if (isAuthenticated) {
     <a mat-button routerLink="/settings">Settings</a>
+    <a mat-button routerLink="/users">Users</a>
     <a mat-button routerLink="/chat">Chat</a>
     <span class="user">{{ username }}</span>
     <button mat-button (click)="logout()">Logout</button>
