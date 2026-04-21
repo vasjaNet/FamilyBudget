@@ -24,7 +24,7 @@ public class UserService {
 
 
     @CachePut(value = "users", key = "#result.id")
-    public UserResponse createUser(CreateUserRequest request, String changedBy) {
+    public UserResponse createUser(CreateUserRequest request) {
         if (userRepository.existsByUsername(request.username())) {
             throw new IllegalArgumentException("Username already exists");
         }
@@ -32,7 +32,6 @@ public class UserService {
             throw new IllegalArgumentException("Email already exists");
         }
         User user = userMapper.mapToUser(request);
-        user.setCreatedBy(changedBy);
 
         User savedUser = userRepository.save(user);
         return userMapper.mapToResponse(savedUser);
@@ -61,7 +60,7 @@ public class UserService {
     }
 
     @CacheEvict(value = "users", key = "#userId")
-    public UserResponse updateUser(UUID userId, UpdateUserRequest request, String changedBy) {
+    public UserResponse updateUser(UUID userId, UpdateUserRequest request) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -72,14 +71,13 @@ public class UserService {
         user.setEmail(request.email());
         user.setFirstName(request.firstName());
         user.setLastName(request.lastName());
-        user.setUpdatedBy(changedBy);
 
         User updatedUser = userRepository.save(user);
         return userMapper.mapToResponse(updatedUser);
     }
 
     @CacheEvict(value = "users", key = "#userId")
-    public void deleteUser(UUID userId, String changedBy) {
+    public void deleteUser(UUID userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
         userRepository.delete(user);

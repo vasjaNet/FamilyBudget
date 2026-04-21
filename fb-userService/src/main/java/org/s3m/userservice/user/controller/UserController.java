@@ -9,6 +9,8 @@ import org.s3m.userservice.user.dto.UserResponse;
 import org.s3m.userservice.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +23,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<UserResponse>> createUser(@RequestBody CreateUserRequest request,
-                                                                @RequestHeader(value = "X-User-Id",
-                                                                        defaultValue = "SYSTEM") String userId) {
-        UserResponse response = userService.createUser(request, userId);
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(@RequestBody CreateUserRequest request) {
+        UserResponse response = userService.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(ApiResponse.success("User created successfully", response));
     }
@@ -42,25 +42,21 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers(@AuthenticationPrincipal Jwt jwt) {
         List<UserResponse> response = userService.getAllUsers();
         return ResponseEntity.ok(ApiResponse.success("Users retrieved successfully", response));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> updateUser(
-            @PathVariable UUID id,
-            @RequestBody UpdateUserRequest request,
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        UserResponse response = userService.updateUser(id, request, userId);
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(@PathVariable UUID id,
+                                                                @RequestBody UpdateUserRequest request) {
+        UserResponse response = userService.updateUser(id, request);
         return ResponseEntity.ok(ApiResponse.success("User updated successfully", response));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteUser(
-            @PathVariable UUID id,
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        userService.deleteUser(id, userId);
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable UUID id) {
+        userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
             .body(ApiResponse.success("User deleted successfully", null));
     }

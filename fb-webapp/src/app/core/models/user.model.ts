@@ -4,8 +4,33 @@ export interface User {
   email: string;
   firstName?: string;
   lastName?: string;
+  status: 'ACTIVE' | 'DISABLED' | 'PASSWORD_EXPIRED';
   createdAt?: string;
   updatedAt?: string;
+  createdBy?: string;
+  updatedBy?: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
+  timestamp: string;
+}
+
+export interface CreateUserRequest {
+  username: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  status: 'ACTIVE' | 'DISABLED' | 'PASSWORD_EXPIRED';
+}
+
+export interface UpdateUserRequest {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  status: 'ACTIVE' | 'DISABLED' | 'PASSWORD_EXPIRED';
 }
 
 export interface LoginRequest {
