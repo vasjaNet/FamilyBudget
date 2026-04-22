@@ -45,3 +45,45 @@ mat-chip {
   padding: 4px 8px;
   border-radius: 4px;
 }
+
+.tenants-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tenants-list {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.tenant-chip {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  font-size: 12px;
+  padding: 1px 2px;
+}
+
+.tenant-chip:hover {
+  background-color: #bbdefb;
+}
+
+.no-tenants {
+  color: #999;
+  font-style: italic;
+}
+
+.add-tenant-btn {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  line-height: 24px;
+}
+
+.add-tenant-btn mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}

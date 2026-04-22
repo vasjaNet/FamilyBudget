@@ -72,12 +72,6 @@ public class UserController {
                 .body(ApiResponse.success("User assigned to tenant successfully", response));
     }
 
-    @GetMapping("/{id}/user-tenants")
-    public ResponseEntity<ApiResponse<List<UserTenantResponse>>> getUserTenantsByUserId(@PathVariable UUID id) {
-        List<UserTenantResponse> response = userTenantService.getUserTenantsByUserId(id);
-        return ResponseEntity.ok(ApiResponse.success("User-Tenant relationships retrieved successfully", response));
-    }
-
     @DeleteMapping("/{id}/tenant/{tenantId}")
     public ResponseEntity<ApiResponse<Void>> removeUserFromTenantByUserAndTenant(@PathVariable UUID id,
                                                                                  @PathVariable UUID tenantId) {
