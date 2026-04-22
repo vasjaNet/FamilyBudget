@@ -7,6 +7,9 @@ import org.s3m.userservice.user.dto.CreateUserRequest;
 import org.s3m.userservice.user.dto.UpdateUserRequest;
 import org.s3m.userservice.user.dto.UserResponse;
 import org.s3m.userservice.user.service.UserService;
+import org.s3m.userservice.usertenant.dto.CreateUserTenantRequest;
+import org.s3m.userservice.usertenant.dto.UserTenantResponse;
+import org.s3m.userservice.usertenant.service.UserTenantService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,6 +24,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final UserTenantService userTenantService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> createUser(@RequestBody CreateUserRequest request) {
@@ -59,6 +63,27 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
             .body(ApiResponse.success("User deleted successfully", null));
+    }
+
+    @PostMapping("/user-tenants")
+    public ResponseEntity<ApiResponse<UserTenantResponse>> assignUserToTenant(@RequestBody CreateUserTenantRequest request) {
+        UserTenantResponse response = userTenantService.assignUserToTenant(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("User assigned to tenant successfully", response));
+    }
+
+    @GetMapping("/{id}/user-tenants")
+    public ResponseEntity<ApiResponse<List<UserTenantResponse>>> getUserTenantsByUserId(@PathVariable UUID id) {
+        List<UserTenantResponse> response = userTenantService.getUserTenantsByUserId(id);
+        return ResponseEntity.ok(ApiResponse.success("User-Tenant relationships retrieved successfully", response));
+    }
+
+    @DeleteMapping("/{id}/tenant/{tenantId}")
+    public ResponseEntity<ApiResponse<Void>> removeUserFromTenantByUserAndTenant(@PathVariable UUID id,
+                                                                                 @PathVariable UUID tenantId) {
+        userTenantService.removeUserFromTenantByUserAndTenant(id, tenantId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(ApiResponse.success("User removed from tenant successfully", null));
     }
 
 }

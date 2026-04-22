@@ -54,9 +54,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserResponse> getAllUsers() {
-        return userRepository.findAll().stream()
-            .map(userMapper::mapToResponse)
-            .toList();
+        return userMapper.mapToResponseList(userRepository.findAll());
     }
 
     @CacheEvict(value = "users", key = "#userId")
@@ -68,9 +66,7 @@ public class UserService {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        user.setEmail(request.email());
-        user.setFirstName(request.firstName());
-        user.setLastName(request.lastName());
+        userMapper.updateUserFromRequest(request, user);
 
         User updatedUser = userRepository.save(user);
         return userMapper.mapToResponse(updatedUser);

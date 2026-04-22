@@ -1,0 +1,47 @@
+.users-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+mat-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+mat-card-title {
+  margin: 0;
+}
+
+.users-table {
+  width: 100%;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.status-active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.status-disabled {
+  background-color: #f44336;
+  color: white;
+}
+
+.status-password-expired {
+  background-color: #ff9800;
+  color: white;
+}
+
+mat-chip {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}

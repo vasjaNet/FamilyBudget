@@ -3,7 +3,6 @@ package org.s3m.userservice.usertenant.controller;
 import lombok.AllArgsConstructor;
 import org.s3m.commonlib.config.ApiResponse;
 import org.s3m.commonlib.util.AppConstants;
-import org.s3m.userservice.usertenant.dto.CreateUserTenantRequest;
 import org.s3m.userservice.usertenant.dto.UserTenantResponse;
 import org.s3m.userservice.usertenant.service.UserTenantService;
 import org.springframework.http.HttpStatus;
@@ -20,15 +19,6 @@ public class UserTenantController {
 
     private final UserTenantService userTenantService;
 
-    @PostMapping
-    public ResponseEntity<ApiResponse<UserTenantResponse>> assignUserToTenant(
-            @RequestBody CreateUserTenantRequest request,
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        UserTenantResponse response = userTenantService.assignUserToTenant(request, userId);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("User assigned to tenant successfully", response));
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<UserTenantResponse>> getUserTenantById(@PathVariable UUID id) {
         UserTenantResponse response = userTenantService.getUserTenantById(id);
@@ -36,23 +26,10 @@ public class UserTenantController {
     }
 
     @GetMapping("/user/{userId}/tenant/{tenantId}")
-    public ResponseEntity<ApiResponse<UserTenantResponse>> getUserTenantByUserAndTenant(
-            @PathVariable UUID userId,
-            @PathVariable UUID tenantId) {
+    public ResponseEntity<ApiResponse<UserTenantResponse>> getUserTenantByUserAndTenant(@PathVariable UUID userId,
+                                                                                        @PathVariable UUID tenantId) {
         UserTenantResponse response = userTenantService.getUserTenantByUserAndTenant(userId, tenantId);
         return ResponseEntity.ok(ApiResponse.success("User-Tenant relationship retrieved successfully", response));
-    }
-
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse<List<UserTenantResponse>>> getUserTenantsByUserId(@PathVariable UUID userId) {
-        List<UserTenantResponse> response = userTenantService.getUserTenantsByUserId(userId);
-        return ResponseEntity.ok(ApiResponse.success("User-Tenant relationships retrieved successfully", response));
-    }
-
-    @GetMapping("/tenant/{tenantId}")
-    public ResponseEntity<ApiResponse<List<UserTenantResponse>>> getUserTenantsByTenantId(@PathVariable UUID tenantId) {
-        List<UserTenantResponse> response = userTenantService.getUserTenantsByTenantId(tenantId);
-        return ResponseEntity.ok(ApiResponse.success("User-Tenant relationships retrieved successfully", response));
     }
 
     @GetMapping
@@ -62,22 +39,9 @@ public class UserTenantController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> removeUserFromTenant(
-            @PathVariable UUID id,
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        userTenantService.removeUserFromTenant(id, userId);
+    public ResponseEntity<ApiResponse<Void>> removeUserFromTenant(@PathVariable UUID id) {
+        userTenantService.removeUserFromTenant(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(ApiResponse.success("User removed from tenant successfully", null));
     }
-
-    @DeleteMapping("/user/{userId}/tenant/{tenantId}")
-    public ResponseEntity<ApiResponse<Void>> removeUserFromTenantByUserAndTenant(
-            @PathVariable UUID userId,
-            @PathVariable UUID tenantId,
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String changedBy) {
-        userTenantService.removeUserFromTenantByUserAndTenant(userId, tenantId, changedBy);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(ApiResponse.success("User removed from tenant successfully", null));
-    }
-
 }
