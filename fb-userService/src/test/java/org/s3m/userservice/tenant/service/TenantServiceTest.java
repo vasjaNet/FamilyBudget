@@ -116,7 +116,7 @@ class TenantServiceTest {
         );
 
         // When
-        TenantResponse result = tenantService.createTenant(createTenantRequest, "admin");
+        TenantResponse result = tenantService.createTenant(createTenantRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -132,7 +132,7 @@ class TenantServiceTest {
         given(tenantRepository.existsByName("Business Tenant")).willReturn(true);
 
         // When & Then
-        assertThatThrownBy(() -> tenantService.createTenant(createTenantRequest, "admin"))
+        assertThatThrownBy(() -> tenantService.createTenant(createTenantRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Tenant with name 'Business Tenant' already exists");
 
@@ -256,7 +256,7 @@ class TenantServiceTest {
         );
 
         // When
-        TenantResponse result = tenantService.updateTenant(testTenantId, updateTenantRequest, "admin");
+        TenantResponse result = tenantService.updateTenant(testTenantId, updateTenantRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -272,7 +272,7 @@ class TenantServiceTest {
         given(tenantRepository.existsByName("Updated Tenant")).willReturn(true);
 
         // When & Then
-        assertThatThrownBy(() -> tenantService.updateTenant(testTenantId, updateTenantRequest, "admin"))
+        assertThatThrownBy(() -> tenantService.updateTenant(testTenantId, updateTenantRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Tenant with name 'Updated Tenant' already exists");
     }
@@ -298,7 +298,7 @@ class TenantServiceTest {
         );
 
         // When
-        TenantResponse result = tenantService.updateTenant(testTenantId, sameNameRequest, "admin");
+        TenantResponse result = tenantService.updateTenant(testTenantId, sameNameRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -312,7 +312,7 @@ class TenantServiceTest {
         given(tenantRepository.findById(testTenantId)).willReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> tenantService.updateTenant(testTenantId, updateTenantRequest, "admin"))
+        assertThatThrownBy(() -> tenantService.updateTenant(testTenantId, updateTenantRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Tenant not found");
     }
@@ -324,7 +324,7 @@ class TenantServiceTest {
         given(tenantRepository.findById(testTenantId)).willReturn(Optional.of(testTenant));
 
         // When
-        tenantService.deleteTenant(testTenantId, "admin");
+        tenantService.deleteTenant(testTenantId);
 
         // Then
         verify(tenantRepository).delete(testTenant);
@@ -337,7 +337,7 @@ class TenantServiceTest {
         given(tenantRepository.findById(testTenantId)).willReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> tenantService.deleteTenant(testTenantId, "admin"))
+        assertThatThrownBy(() -> tenantService.deleteTenant(testTenantId))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Tenant not found");
 

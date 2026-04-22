@@ -5,6 +5,9 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.s3m.userservice.usertenant.entity.UserTenant;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 public class Tenant {
 
@@ -39,8 +43,10 @@ public class Tenant {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @CreatedBy
     private String createdBy;
 
+    @LastModifiedBy
     private String updatedBy;
 
     @OneToMany(mappedBy = "tenant", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

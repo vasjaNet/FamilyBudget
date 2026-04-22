@@ -25,13 +25,12 @@ public class TenantService {
     private final TenantMapper tenantMapper;
 
     @CachePut(value = "tenants", key = "#result.id")
-    public TenantResponse createTenant(CreateTenantRequest request, String changedBy) {
+    public TenantResponse createTenant(CreateTenantRequest request) {
         if (tenantRepository.existsByName(request.name())) {
             throw new IllegalArgumentException("Tenant with name '" + request.name() + "' already exists");
         }
 
         Tenant tenant = tenantMapper.mapToEntity(request);
-        tenant.setCreatedBy(changedBy);
 
         Tenant savedTenant = tenantRepository.save(tenant);
         return tenantMapper.mapToResponse(savedTenant);
@@ -60,7 +59,7 @@ public class TenantService {
     }
 
     @CacheEvict(value = "tenants", key = "#tenantId")
-    public TenantResponse updateTenant(UUID tenantId, UpdateTenantRequest request, String changedBy) {
+    public TenantResponse updateTenant(UUID tenantId, UpdateTenantRequest request) {
         Tenant tenant = tenantRepository.findById(tenantId)
                 .orElseThrow(() -> new IllegalArgumentException("Tenant not found"));
 
@@ -69,14 +68,13 @@ public class TenantService {
         }
 
         tenantMapper.mapToEntity(request, tenant);
-        tenant.setUpdatedBy(changedBy);
 
         Tenant updatedTenant = tenantRepository.save(tenant);
         return tenantMapper.mapToResponse(updatedTenant);
     }
 
     @CacheEvict(value = "tenants", key = "#tenantId")
-    public void deleteTenant(UUID tenantId, String changedBy) {
+    public void deleteTenant(UUID tenantId) {
         Tenant tenant = tenantRepository.findById(tenantId)
                 .orElseThrow(() -> new IllegalArgumentException("Tenant not found"));
         tenantRepository.delete(tenant);

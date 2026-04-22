@@ -1,7 +1,10 @@
 package org.s3m.userservice.user.dto;
 
 import org.s3m.userservice.user.entity.UserStatus;
+import org.s3m.userservice.usertenant.dto.UserTenantResponse;
+
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 public record UserResponse(
@@ -14,5 +17,6 @@ public record UserResponse(
     LocalDateTime createdAt,
     LocalDateTime updatedAt,
     String createdBy,
-    String updatedBy
+    String updatedBy,
+    List<UserTenantResponse> userTenants
 ) {}
