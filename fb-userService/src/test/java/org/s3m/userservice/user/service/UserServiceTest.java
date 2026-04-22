@@ -76,7 +76,8 @@ class UserServiceTest {
             testUser.getCreatedAt(),
             testUser.getUpdatedAt(),
             "system",
-            null
+            null,
+                List.of()
         );
 
         createUserRequest = new CreateUserRequest(
@@ -127,7 +128,8 @@ class UserServiceTest {
             null,
             null,
             "admin",
-            null
+            null,
+                List.of()
         );
 
         given(userRepository.existsByUsername("newuser")).willReturn(false);
@@ -255,12 +257,12 @@ class UserServiceTest {
             null,
             null,
             null,
-            null
+            null,
+                List.of()
         );
 
         given(userRepository.findAll()).willReturn(List.of(testUser, user2));
-        given(userMapper.mapToResponse(testUser)).willReturn(testUserResponse);
-        given(userMapper.mapToResponse(user2)).willReturn(userResponse2);
+        given(userMapper.mapToResponseList(List.of(testUser, user2))).willReturn(List.of(testUserResponse,userResponse2));
 
         // When
         List<UserResponse> result = userService.getAllUsers();
@@ -309,7 +311,8 @@ class UserServiceTest {
             testUser.getCreatedAt(),
             LocalDateTime.now(),
             "system",
-            "admin"
+            "admin",
+                List.of()
         );
 
         given(userRepository.findById(testUserId)).willReturn(Optional.of(testUser));
