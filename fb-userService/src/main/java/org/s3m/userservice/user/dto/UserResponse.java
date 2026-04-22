@@ -1,7 +1,6 @@
 package org.s3m.userservice.user.dto;
 
 import org.s3m.userservice.user.entity.UserStatus;
-import org.s3m.userservice.usertenant.dto.UserTenantResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;

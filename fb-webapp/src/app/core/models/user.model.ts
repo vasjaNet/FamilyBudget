@@ -1,3 +1,5 @@
+import { UserTenantResponse } from './user-tenant.model';
+
 export interface User {
   id: string;
   username: string;
@@ -9,6 +11,7 @@ export interface User {
   updatedAt?: string;
   createdBy?: string;
   updatedBy?: string;
+  userTenants?: UserTenantResponse[];
 }
 
 export interface ApiResponse<T> {

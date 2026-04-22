@@ -3,13 +3,19 @@ package org.s3m.userservice.tenant.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.s3m.userservice.tenant.dto.CreateTenantRequest;
-import org.s3m.userservice.tenant.dto.TenantResponse;
-import org.s3m.userservice.tenant.dto.UpdateTenantRequest;
+import org.s3m.userservice.tenant.dto.*;
 import org.s3m.userservice.tenant.entity.Tenant;
+import org.s3m.userservice.usertenant.entity.UserTenant;
 
 @Mapper
 public interface TenantMapper {
+
+
+    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "userUsername", source = "user.username")
+    @Mapping(target = "roleId", source = "userRole.id")
+    @Mapping(target = "roleName", source = "userRole.name")
+    TenantUserResponse mapToResponse(UserTenant userTenant);
 
     TenantResponse mapToResponse(Tenant tenant);
 

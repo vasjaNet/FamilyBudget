@@ -19,6 +19,4 @@ public interface UserTenantRepository extends JpaRepository<UserTenant, UUID> {
 
     boolean existsByUserIdAndTenantId(UUID userId, UUID tenantId);
 
-    void deleteByUserIdAndTenantId(UUID userId, UUID tenantId);
-
 }

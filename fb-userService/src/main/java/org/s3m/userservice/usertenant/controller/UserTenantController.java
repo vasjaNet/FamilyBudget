@@ -25,13 +25,6 @@ public class UserTenantController {
         return ResponseEntity.ok(ApiResponse.success("User-Tenant relationship retrieved successfully", response));
     }
 
-    @GetMapping("/user/{userId}/tenant/{tenantId}")
-    public ResponseEntity<ApiResponse<UserTenantResponse>> getUserTenantByUserAndTenant(@PathVariable UUID userId,
-                                                                                        @PathVariable UUID tenantId) {
-        UserTenantResponse response = userTenantService.getUserTenantByUserAndTenant(userId, tenantId);
-        return ResponseEntity.ok(ApiResponse.success("User-Tenant relationship retrieved successfully", response));
-    }
-
     @GetMapping
     public ResponseEntity<ApiResponse<List<UserTenantResponse>>> getAllUserTenants() {
         List<UserTenantResponse> response = userTenantService.getAllUserTenants();

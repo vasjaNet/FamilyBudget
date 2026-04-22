@@ -6,12 +6,21 @@ import org.mapstruct.MappingTarget;
 import org.s3m.userservice.user.dto.CreateUserRequest;
 import org.s3m.userservice.user.dto.UpdateUserRequest;
 import org.s3m.userservice.user.dto.UserResponse;
+import org.s3m.userservice.user.dto.UserTenantResponse;
 import org.s3m.userservice.user.entity.User;
+import org.s3m.userservice.usertenant.entity.UserTenant;
 
 import java.util.List;
 
 @Mapper
 public interface UserMapper {
+
+
+    @Mapping(target = "tenantId", source = "tenant.id")
+    @Mapping(target = "tenantName", source = "tenant.name")
+    @Mapping(target = "roleId", source = "userRole.id")
+    @Mapping(target = "roleName", source = "userRole.name")
+    UserTenantResponse mapToResponse(UserTenant userTenant);
 
     UserResponse mapToResponse(User user);
 
