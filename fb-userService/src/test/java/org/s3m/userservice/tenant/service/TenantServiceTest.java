@@ -73,7 +73,8 @@ class TenantServiceTest {
             testTenant.getCreatedAt(),
             testTenant.getUpdatedAt(),
             "system",
-            "system"
+            "system",
+                List.of()
         );
 
         createTenantRequest = new CreateTenantRequest(
@@ -112,7 +113,7 @@ class TenantServiceTest {
         given(tenantRepository.save(tenantToSave)).willReturn(savedTenant);
         given(tenantMapper.mapToResponse(savedTenant)).willReturn(
             new TenantResponse(savedTenant.getId(), "Business Tenant", "My business tenant",
-                TenantType.BUSINESS, null, null, "admin", null)
+                TenantType.BUSINESS, null, null, "admin", null, List.of())
         );
 
         // When
@@ -209,7 +210,7 @@ class TenantServiceTest {
         given(tenantMapper.mapToResponse(testTenant)).willReturn(testTenantResponse);
         given(tenantMapper.mapToResponse(tenant2)).willReturn(
             new TenantResponse(tenant2.getId(), "Business Tenant", "Business tenant",
-                TenantType.BUSINESS, null, null, null, null)
+                TenantType.BUSINESS, null, null, null, null, List.of())
         );
 
         // When
@@ -252,8 +253,7 @@ class TenantServiceTest {
         given(tenantRepository.save(testTenant)).willReturn(updatedTenant);
         given(tenantMapper.mapToResponse(updatedTenant)).willReturn(
             new TenantResponse(testTenantId, "Updated Tenant", "Updated description",
-                TenantType.FAMILY, null, null, "system", "admin")
-        );
+                TenantType.FAMILY, null, null, "system", "admin", List.of()));
 
         // When
         TenantResponse result = tenantService.updateTenant(testTenantId, updateTenantRequest);
@@ -294,7 +294,7 @@ class TenantServiceTest {
         given(tenantRepository.save(testTenant)).willReturn(updatedTenant);
         given(tenantMapper.mapToResponse(updatedTenant)).willReturn(
             new TenantResponse(testTenantId, "Personal Tenant", "Updated description",
-                TenantType.FAMILY, null, null, null, "admin")
+                TenantType.FAMILY, null, null, null, "admin", List.of())
         );
 
         // When
