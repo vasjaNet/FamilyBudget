@@ -1,15 +1,19 @@
-<div class="tenants-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Tenant Management</mat-card-title>
-      <button mat-raised-button color="primary" (click)="openCreateDialog()">
-        <mat-icon>add</mat-icon>
-        Add Tenant
-      </button>
-    </mat-card-header>
+<section class="page-shell">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Tenant Management</h1>
+      <p class="page-subtitle">Manage tenant spaces and keep ownership details organized.</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">
+      <mat-icon>add</mat-icon>
+      Add Tenant
+    </button>
+  </div>
 
+  <mat-card class="content-card">
     <mat-card-content>
-      <table mat-table [dataSource]="tenants" class="tenants-table">
+      <div class="table-wrapper">
+        <table mat-table [dataSource]="tenants" class="app-table tenants-table">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Name</th>
           <td mat-cell *matCellDef="let tenant">{{ tenant.name }}</td>
@@ -23,7 +27,7 @@
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef>Type</th>
           <td mat-cell *matCellDef="let tenant">
-            <mat-chip [class]="getTypeClass(tenant.type)">
+            <mat-chip [class]="'status-chip ' + getTypeClass(tenant.type)">
               {{ tenant.type }}
             </mat-chip>
           </td>
@@ -48,11 +52,12 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+        </table>
+      </div>
 
       <div *ngIf="tenants.length === 0 && !loading" class="empty-state">
-        No tenants found. Click "Add Tenant" to create one.
+        No tenants yet. Click "Add Tenant" to create your first one.
       </div>
     </mat-card-content>
   </mat-card>
-</div>
+</section>

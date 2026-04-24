@@ -1,4 +1,112 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global layout and UI consistency styles */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: #1f2937;
+  background-color: #f6f8fb;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.page-shell {
+  padding: 1.5rem;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.page-subtitle {
+  margin: 0.35rem 0 0;
+  color: #4b5563;
+  line-height: 1.45;
+}
+
+.content-card {
+  border-radius: 14px !important;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.app-table {
+  width: 100%;
+  min-width: 680px;
+}
+
+.empty-state {
+  text-align: center;
+  color: #6b7280;
+  border: 1px dashed #d1d5db;
+  border-radius: 10px;
+  padding: 2rem 1rem;
+  margin-top: 1rem;
+  background: #ffffff;
+}
+
+.status-chip {
+  color: #fff !important;
+  border-radius: 999px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: capitalize;
+}
+
+.status-active {
+  background-color: #2e7d32 !important;
+}
+
+.status-disabled {
+  background-color: #c62828 !important;
+}
+
+.status-password-expired {
+  background-color: #ef6c00 !important;
+}
+
+.type-personal {
+  background-color: #1565c0 !important;
+}
+
+.type-family {
+  background-color: #2e7d32 !important;
+}
+
+.type-business {
+  background-color: #6a1b9a !important;
+}
+
+@media (max-width: 768px) {
+  .page-shell {
+    padding: 1rem;
+  }
+
+  .page-title {
+    font-size: 1.45rem;
+  }
+}

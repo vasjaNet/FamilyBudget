@@ -1,14 +1,19 @@
 .auth-page {
-  padding: 2rem;
+  padding: 1.5rem;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   min-height: calc(100vh - 64px);
 }
 
 .auth-card {
-  max-width: 400px;
+  max-width: 440px;
   width: 100%;
+}
+
+.auth-subtitle {
+  color: #4b5563;
+  margin: 0 0 1.25rem;
 }
 
 .full-width {
@@ -21,4 +26,9 @@
   align-items: center;
   gap: 1rem;
   margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.submit-btn {
+  min-width: 120px;
 }

@@ -1,47 +1,10 @@
-.tenants-container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-mat-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
-
-mat-card-title {
-  margin: 0;
-}
-
 .tenants-table {
-  width: 100%;
+  td,
+  th {
+    white-space: nowrap;
+  }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 40px;
-  color: #666;
-}
-
-.type-personal {
-  background-color: #2196f3;
-  color: white;
-}
-
-.type-family {
-  background-color: #4caf50;
-  color: white;
-}
-
-.type-business {
-  background-color: #9c27b0;
-  color: white;
-}
-
-mat-chip {
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 4px;
+.mat-mdc-icon-button {
+  margin-right: 0.2rem;
 }

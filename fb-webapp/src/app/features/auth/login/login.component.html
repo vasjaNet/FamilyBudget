@@ -1,9 +1,10 @@
 <main class="auth-page">
-  <mat-card class="auth-card">
+  <mat-card class="auth-card content-card">
     <mat-card-header>
-      <mat-card-title>Login</mat-card-title>
+      <mat-card-title>Welcome Back</mat-card-title>
     </mat-card-header>
     <mat-card-content>
+      <p class="auth-subtitle">Sign in to continue managing your family budget.</p>
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Username</mat-label>
@@ -20,11 +21,11 @@
           }
         </mat-form-field>
         <div class="actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading" class="submit-btn">
             @if (loading) {
               <mat-spinner diameter="24"></mat-spinner>
             } @else {
-              Login
+              Sign In
             }
           </button>
           <a mat-button routerLink="/signup">Create account</a>
