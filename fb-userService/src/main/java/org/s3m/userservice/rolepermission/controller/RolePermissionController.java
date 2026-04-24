@@ -38,10 +38,8 @@ public class RolePermissionController {
     })
     @PostMapping
     public ResponseEntity<ApiResponse<RolePermissionResponse>> assignPermissionToRole(
-            @RequestBody CreateRolePermissionRequest request,
-            @Parameter(description = "ID of the user performing the action", example = "SYSTEM")
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        RolePermissionResponse response = rolePermissionService.assignPermissionToRole(request, userId);
+            @RequestBody CreateRolePermissionRequest request) {
+        RolePermissionResponse response = rolePermissionService.assignPermissionToRole(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Permission assigned to role successfully", response));
     }
@@ -124,10 +122,8 @@ public class RolePermissionController {
     @DeleteMapping("/role/{roleId}/permission/{permissionId}")
     public ResponseEntity<ApiResponse<Void>> removePermissionFromRoleByIds(
             @Parameter(description = "Role UUID") @PathVariable UUID roleId,
-            @Parameter(description = "Permission UUID") @PathVariable UUID permissionId,
-            @Parameter(description = "ID of the user performing the action", example = "SYSTEM")
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String changedBy) {
-        rolePermissionService.removePermissionFromRoleByIds(roleId, permissionId, changedBy);
+            @Parameter(description = "Permission UUID") @PathVariable UUID permissionId) {
+        rolePermissionService.removePermissionFromRoleByIds(roleId, permissionId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(ApiResponse.success("Permission removed from role successfully", null));
     }

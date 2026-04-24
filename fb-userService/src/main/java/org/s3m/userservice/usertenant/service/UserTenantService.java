@@ -64,27 +64,6 @@ public class UserTenantService {
     }
 
     @Transactional(readOnly = true)
-    public UserTenantResponse getUserTenantByUserAndTenant(UUID userId, UUID tenantId) {
-        UserTenant userTenant = userTenantRepository.findByUserIdAndTenantId(userId, tenantId)
-                .orElseThrow(() -> new IllegalArgumentException("User-Tenant relationship not found"));
-        return userTenantMapper.mapToResponse(userTenant);
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserTenantResponse> getUserTenantsByUserId(UUID userId) {
-        return userTenantRepository.findByUserId(userId).stream()
-                .map(userTenantMapper::mapToResponse)
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserTenantResponse> getUserTenantsByTenantId(UUID tenantId) {
-        return userTenantRepository.findByTenantId(tenantId).stream()
-                .map(userTenantMapper::mapToResponse)
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
     public List<UserTenantResponse> getAllUserTenants() {
         return userTenantRepository.findAll().stream()
                 .map(userTenantMapper::mapToResponse)

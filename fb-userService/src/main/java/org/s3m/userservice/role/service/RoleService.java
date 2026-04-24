@@ -25,14 +25,12 @@ public class RoleService {
     private final RoleMapper roleMapper;
 
     @CachePut(value = "roles", key = "#result.id")
-    public RoleResponse createRole(CreateRoleRequest request, String changedBy) {
+    public RoleResponse createRole(CreateRoleRequest request) {
         if (roleRepository.existsByName(request.name())) {
             throw new IllegalArgumentException("Role with name '" + request.name() + "' already exists");
         }
 
         Role role = roleMapper.mapToEntity(request);
-        role.setCreatedBy(changedBy);
-        role.setUpdatedBy(changedBy);
 
         Role savedRole = roleRepository.save(role);
         return roleMapper.mapToResponse(savedRole);
@@ -61,7 +59,7 @@ public class RoleService {
     }
 
     @CacheEvict(value = "roles", key = "#roleId")
-    public RoleResponse updateRole(UUID roleId, UpdateRoleRequest request, String changedBy) {
+    public RoleResponse updateRole(UUID roleId, UpdateRoleRequest request) {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found with id: " + roleId));
 
@@ -70,7 +68,6 @@ public class RoleService {
         }
 
         roleMapper.mapToEntity(request, role);
-        role.setUpdatedBy(changedBy);
 
         Role updatedRole = roleRepository.save(role);
         return roleMapper.mapToResponse(updatedRole);

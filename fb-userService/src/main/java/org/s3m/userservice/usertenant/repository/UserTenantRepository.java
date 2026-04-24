@@ -13,10 +13,6 @@ public interface UserTenantRepository extends JpaRepository<UserTenant, UUID> {
 
     Optional<UserTenant> findByUserIdAndTenantId(UUID userId, UUID tenantId);
 
-    List<UserTenant> findByUserId(UUID userId);
-
-    List<UserTenant> findByTenantId(UUID tenantId);
-
-    boolean existsByUserIdAndTenantId(UUID userId, UUID tenantId);
+     boolean existsByUserIdAndTenantId(UUID userId, UUID tenantId);
 
 }

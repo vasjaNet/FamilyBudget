@@ -25,14 +25,12 @@ public class PermissionService {
     private final PermissionMapper permissionMapper;
 
     @CachePut(value = "permissions", key = "#result.id")
-    public PermissionResponse createPermission(CreatePermissionRequest request, String changedBy) {
+    public PermissionResponse createPermission(CreatePermissionRequest request) {
         if (permissionRepository.existsByName(request.name())) {
             throw new IllegalArgumentException("Permission with name '" + request.name() + "' already exists");
         }
 
         Permission permission = permissionMapper.mapToEntity(request);
-        permission.setCreatedBy(changedBy);
-        permission.setUpdatedBy(changedBy);
 
         Permission savedPermission = permissionRepository.save(permission);
         return permissionMapper.mapToResponse(savedPermission);
@@ -75,7 +73,7 @@ public class PermissionService {
     }
 
     @CacheEvict(value = "permissions", key = "#permissionId")
-    public PermissionResponse updatePermission(UUID permissionId, UpdatePermissionRequest request, String changedBy) {
+    public PermissionResponse updatePermission(UUID permissionId, UpdatePermissionRequest request) {
         Permission permission = permissionRepository.findById(permissionId)
                 .orElseThrow(() -> new IllegalArgumentException("Permission not found with id: " + permissionId));
 
@@ -84,14 +82,13 @@ public class PermissionService {
         }
 
         permissionMapper.mapToEntity(request, permission);
-        permission.setUpdatedBy(changedBy);
 
         Permission updatedPermission = permissionRepository.save(permission);
         return permissionMapper.mapToResponse(updatedPermission);
     }
 
     @CacheEvict(value = "permissions", key = "#permissionId")
-    public void deletePermission(UUID permissionId, String changedBy) {
+    public void deletePermission(UUID permissionId) {
         Permission permission = permissionRepository.findById(permissionId)
                 .orElseThrow(() -> new IllegalArgumentException("Permission not found with id: " + permissionId));
         permissionRepository.delete(permission);

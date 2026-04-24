@@ -38,10 +38,8 @@ public class RoleController {
     })
     @PostMapping
     public ResponseEntity<ApiResponse<RoleResponse>> createRole(
-            @RequestBody CreateRoleRequest request,
-            @Parameter(description = "ID of the user performing the action", example = "SYSTEM")
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        RoleResponse response = roleService.createRole(request, userId);
+            @RequestBody CreateRoleRequest request) {
+        RoleResponse response = roleService.createRole(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Role created successfully", response));
     }
@@ -97,10 +95,8 @@ public class RoleController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<RoleResponse>> updateRole(
             @Parameter(description = "Role UUID") @PathVariable UUID id,
-            @RequestBody UpdateRoleRequest request,
-            @Parameter(description = "ID of the user performing the action", example = "SYSTEM")
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        RoleResponse response = roleService.updateRole(id, request, userId);
+            @RequestBody UpdateRoleRequest request) {
+        RoleResponse response = roleService.updateRole(id, request);
         return ResponseEntity.ok(ApiResponse.success("Role updated successfully", response));
     }
 

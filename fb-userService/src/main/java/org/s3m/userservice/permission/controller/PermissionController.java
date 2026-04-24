@@ -38,10 +38,8 @@ public class PermissionController {
     })
     @PostMapping
     public ResponseEntity<ApiResponse<PermissionResponse>> createPermission(
-            @RequestBody CreatePermissionRequest request,
-            @Parameter(description = "ID of the user performing the action", example = "SYSTEM")
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        PermissionResponse response = permissionService.createPermission(request, userId);
+            @RequestBody CreatePermissionRequest request) {
+        PermissionResponse response = permissionService.createPermission(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Permission created successfully", response));
     }
@@ -123,10 +121,8 @@ public class PermissionController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<PermissionResponse>> updatePermission(
             @Parameter(description = "Permission UUID") @PathVariable UUID id,
-            @RequestBody UpdatePermissionRequest request,
-            @Parameter(description = "ID of the user performing the action", example = "SYSTEM")
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        PermissionResponse response = permissionService.updatePermission(id, request, userId);
+            @RequestBody UpdatePermissionRequest request) {
+        PermissionResponse response = permissionService.updatePermission(id, request);
         return ResponseEntity.ok(ApiResponse.success("Permission updated successfully", response));
     }
 
@@ -139,10 +135,8 @@ public class PermissionController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deletePermission(
-            @Parameter(description = "Permission UUID") @PathVariable UUID id,
-            @Parameter(description = "ID of the user performing the action", example = "SYSTEM")
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        permissionService.deletePermission(id, userId);
+            @Parameter(description = "Permission UUID") @PathVariable UUID id) {
+        permissionService.deletePermission(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(ApiResponse.success("Permission deleted successfully", null));
     }
