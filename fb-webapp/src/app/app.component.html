@@ -1,17 +1,19 @@
-<mat-toolbar color="primary">
-  <a mat-button routerLink="/">FamilyBudget</a>
+<mat-toolbar color="primary" class="topbar">
+  <a mat-button routerLink="/" class="brand">FamilyBudget</a>
   <span class="spacer"></span>
-  @if (isAuthenticated) {
-    <a mat-button routerLink="/settings">Settings</a>
-    <a mat-button routerLink="/users">Users</a>
-    <a mat-button routerLink="/tenants">Tenants</a>
-    <a mat-button routerLink="/chat">Chat</a>
-    <span class="user">{{ username }}</span>
-    <button mat-button (click)="logout()">Logout</button>
-  } @else {
-    <a mat-button routerLink="/login">Login</a>
-    <a mat-button routerLink="/signup">Sign Up</a>
-  }
+  <nav class="nav-links">
+    @if (isAuthenticated) {
+      <a mat-button routerLink="/settings">Settings</a>
+      <a mat-button routerLink="/users">Users</a>
+      <a mat-button routerLink="/tenants">Tenants</a>
+      <a mat-button routerLink="/chat">Chat</a>
+      <span class="user">{{ username }}</span>
+      <button mat-stroked-button (click)="logout()">Logout</button>
+    } @else {
+      <a mat-button routerLink="/login">Login</a>
+      <a mat-raised-button routerLink="/signup">Sign Up</a>
+    }
+  </nav>
 </mat-toolbar>
 <main class="content">
   <router-outlet></router-outlet>
