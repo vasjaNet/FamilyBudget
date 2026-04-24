@@ -110,7 +110,7 @@ class RoleServiceTest {
         );
 
         // When
-        RoleResponse result = roleService.createRole(createRoleRequest, "admin");
+        RoleResponse result = roleService.createRole(createRoleRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -126,7 +126,7 @@ class RoleServiceTest {
         given(roleRepository.existsByName("USER")).willReturn(true);
 
         // When & Then
-        assertThatThrownBy(() -> roleService.createRole(createRoleRequest, "admin"))
+        assertThatThrownBy(() -> roleService.createRole(createRoleRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Role with name 'USER' already exists");
 
@@ -247,7 +247,7 @@ class RoleServiceTest {
         );
 
         // When
-        RoleResponse result = roleService.updateRole(testRoleId, updateRoleRequest, "admin");
+        RoleResponse result = roleService.updateRole(testRoleId, updateRoleRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -263,7 +263,7 @@ class RoleServiceTest {
         given(roleRepository.existsByName("SUPER_ADMIN")).willReturn(true);
 
         // When & Then
-        assertThatThrownBy(() -> roleService.updateRole(testRoleId, updateRoleRequest, "admin"))
+        assertThatThrownBy(() -> roleService.updateRole(testRoleId, updateRoleRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Role with name 'SUPER_ADMIN' already exists");
     }
@@ -287,7 +287,7 @@ class RoleServiceTest {
         );
 
         // When
-        RoleResponse result = roleService.updateRole(testRoleId, sameNameRequest, "admin");
+        RoleResponse result = roleService.updateRole(testRoleId, sameNameRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -302,7 +302,7 @@ class RoleServiceTest {
         given(roleRepository.findById(testRoleId)).willReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> roleService.updateRole(testRoleId, updateRoleRequest, "admin"))
+        assertThatThrownBy(() -> roleService.updateRole(testRoleId, updateRoleRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Role not found with id: " + testRoleId);
     }

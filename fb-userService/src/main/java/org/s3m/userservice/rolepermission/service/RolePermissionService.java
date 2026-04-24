@@ -29,7 +29,7 @@ public class RolePermissionService {
     private final PermissionRepository permissionRepository;
     private final RolePermissionMapper rolePermissionMapper;
 
-    public RolePermissionResponse assignPermissionToRole(CreateRolePermissionRequest request, String changedBy) {
+    public RolePermissionResponse assignPermissionToRole(CreateRolePermissionRequest request) {
         if (rolePermissionRepository.existsById(new RolePermissionId(request.roleId(), request.permissionId()))) {
             throw new IllegalArgumentException("Permission is already assigned to this role");
         }
@@ -42,8 +42,6 @@ public class RolePermissionService {
         RolePermissionId id = new RolePermissionId(role.getId(), permission.getId());
         RolePermission rolePermission = RolePermission.builder()
                 .id(id)
-                .createdBy(changedBy)
-                .updatedBy(changedBy)
                 .build();
 
         RolePermission savedRolePermission = rolePermissionRepository.save(rolePermission);
@@ -94,7 +92,7 @@ public class RolePermissionService {
     }*/
 
     @CacheEvict(value = "rolePermissions", allEntries = true)
-    public void removePermissionFromRoleByIds(UUID roleId, UUID permissionId, String changedBy) {
+    public void removePermissionFromRoleByIds(UUID roleId, UUID permissionId) {
         RolePermission rolePermission = rolePermissionRepository.findById(new RolePermissionId(roleId, permissionId))
                 .orElseThrow(() -> new IllegalArgumentException("Role-Permission relationship not found"));
         rolePermissionRepository.delete(rolePermission);

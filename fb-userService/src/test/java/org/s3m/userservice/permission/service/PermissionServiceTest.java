@@ -122,7 +122,7 @@ class PermissionServiceTest {
         );
 
         // When
-        PermissionResponse result = permissionService.createPermission(createPermissionRequest, "admin");
+        PermissionResponse result = permissionService.createPermission(createPermissionRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -139,7 +139,7 @@ class PermissionServiceTest {
         given(permissionRepository.existsByName("USER_WRITE")).willReturn(true);
 
         // When & Then
-        assertThatThrownBy(() -> permissionService.createPermission(createPermissionRequest, "admin"))
+        assertThatThrownBy(() -> permissionService.createPermission(createPermissionRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Permission with name 'USER_WRITE' already exists");
 
@@ -294,7 +294,7 @@ class PermissionServiceTest {
         );
 
         // When
-        PermissionResponse result = permissionService.updatePermission(testPermissionId, updatePermissionRequest, "admin");
+        PermissionResponse result = permissionService.updatePermission(testPermissionId, updatePermissionRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -310,7 +310,7 @@ class PermissionServiceTest {
         given(permissionRepository.existsByName("USER_READ_UPDATED")).willReturn(true);
 
         // When & Then
-        assertThatThrownBy(() -> permissionService.updatePermission(testPermissionId, updatePermissionRequest, "admin"))
+        assertThatThrownBy(() -> permissionService.updatePermission(testPermissionId, updatePermissionRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Permission with name 'USER_READ_UPDATED' already exists");
     }
@@ -339,7 +339,7 @@ class PermissionServiceTest {
         );
 
         // When
-        PermissionResponse result = permissionService.updatePermission(testPermissionId, sameNameRequest, "admin");
+        PermissionResponse result = permissionService.updatePermission(testPermissionId, sameNameRequest);
 
         // Then
         assertThat(result).isNotNull();
@@ -353,7 +353,7 @@ class PermissionServiceTest {
         given(permissionRepository.findById(testPermissionId)).willReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> permissionService.updatePermission(testPermissionId, updatePermissionRequest, "admin"))
+        assertThatThrownBy(() -> permissionService.updatePermission(testPermissionId, updatePermissionRequest))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Permission not found with id: " + testPermissionId);
     }
@@ -365,7 +365,7 @@ class PermissionServiceTest {
         given(permissionRepository.findById(testPermissionId)).willReturn(Optional.of(testPermission));
 
         // When
-        permissionService.deletePermission(testPermissionId, "admin");
+        permissionService.deletePermission(testPermissionId);
 
         // Then
         verify(permissionRepository).delete(testPermission);
@@ -378,7 +378,7 @@ class PermissionServiceTest {
         given(permissionRepository.findById(testPermissionId)).willReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> permissionService.deletePermission(testPermissionId, "admin"))
+        assertThatThrownBy(() -> permissionService.deletePermission(testPermissionId))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Permission not found with id: " + testPermissionId);
 
