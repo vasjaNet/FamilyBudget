@@ -1,3 +1,5 @@
+import { UserTenantResponse } from './user-tenant.model';
+
 export type TenantType = 'PERSONAL' | 'FAMILY' | 'BUSINESS';
 
 export interface Tenant {
@@ -9,6 +11,7 @@ export interface Tenant {
   updatedAt?: string;
   createdBy?: string;
   updatedBy?: string;
+  userTenants?: UserTenantResponse[];
 }
 
 export interface CreateTenantRequest {
