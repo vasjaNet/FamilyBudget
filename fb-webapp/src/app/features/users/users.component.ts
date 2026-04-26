@@ -10,11 +10,17 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { UserService } from '../../core/services/user.service';
 import { UserTenantService } from '../../core/services/user-tenant.service';
 import { TenantService } from '../../core/services/tenant.service';
+import { RoleService } from '../../core/services/role.service';
 import { User } from '../../core/models/user.model';
 import { Tenant } from '../../core/models/tenant.model';
+import { Role } from '../../core/models/role.model';
 import { UserFormDialogComponent, UserFormDialogData } from './user-form-dialog.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from './confirm-dialog.component';
-import { TenantAssignmentDialogComponent, TenantAssignmentDialogData } from './tenant-assignment-dialog.component';
+import {
+  TenantAssignmentDialogComponent,
+  TenantAssignmentDialogData,
+  TenantAssignmentDialogResult
+} from './tenant-assignment-dialog.component';
 
 @Component({
   selector: 'app-users',
@@ -36,17 +42,18 @@ export class UsersComponent implements OnInit {
   private userService = inject(UserService);
   private userTenantService = inject(UserTenantService);
   private tenantService = inject(TenantService);
+  private roleService = inject(RoleService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
   users: User[] = [];
   allTenants: Tenant[] = [];
+  allRoles: Role[] = [];
   loading = false;
   displayedColumns: string[] = ['username', 'email', 'firstName', 'lastName', 'tenants', 'status', 'actions'];
 
   ngOnInit(): void {
     this.loadUsers();
-    this.loadTenand();
   }
 
   loadUsers(): void {
@@ -64,15 +71,31 @@ export class UsersComponent implements OnInit {
 
   }
 
-  loadTenand(): void {
+  loadTenants(onLoaded?: () => void): void {
     this.loading = true;
     this.tenantService.getAllTenants().subscribe({
       next: (tResponse) => {
         this.allTenants = tResponse.data || [];
         this.loading = false;
+        onLoaded?.();
       },
       error: () => {
         this.snackBar.open('Failed to load tenants', 'Close', { duration: 3000 });
+        this.loading = false;
+      }
+    });
+  }
+
+  loadRoles(onLoaded?: () => void): void {
+    this.loading = true;
+    this.roleService.getAllRoles().subscribe({
+      next: (rResponse) => {
+        this.allRoles = rResponse.data || [];
+        this.loading = false;
+        onLoaded?.();
+      },
+      error: () => {
+        this.snackBar.open('Failed to load roles', 'Close', { duration: 3000 });
         this.loading = false;
       }
     });
@@ -158,28 +181,37 @@ export class UsersComponent implements OnInit {
   }
 
   openTenantAssignmentDialog(user: User): void {
+    if (!this.allTenants.length) {
+      this.loadTenants(() => this.openTenantAssignmentDialog(user));
+      return;
+    }
+    if (!this.allRoles.length) {
+      this.loadRoles(() => this.openTenantAssignmentDialog(user));
+      return;
+    }
+
     const assignedTenantIds = user.userTenants?.map(ut => ut.tenantId) || [];
 
-    const dialogRef = this.dialog.open<TenantAssignmentDialogComponent, TenantAssignmentDialogData, string | null>(
+    const dialogRef = this.dialog.open<TenantAssignmentDialogComponent, TenantAssignmentDialogData, TenantAssignmentDialogResult | null>(
       TenantAssignmentDialogComponent,
       {
         width: '400px',
         data: {
           userId: user.id,
           assignedTenantIds,
-          availableTenants: this.allTenants
+          availableTenants: this.allTenants,
+          availableRoles: this.allRoles
         }
       }
     );
 
-    dialogRef.afterClosed().subscribe(selectedTenantId => {
-      if (selectedTenantId) {
-        const selectedTenant = this.allTenants.find(t => t.id === selectedTenantId);
-        const roleId = '279ef9c8-429c-409d-b0ac-655685c4c470'; // Default role - should be configurable based on your role system
+    dialogRef.afterClosed().subscribe(selection => {
+      if (selection) {
+        const selectedTenant = this.allTenants.find(t => t.id === selection.tenantId);
         this.userTenantService.assignUserToTenant({
           userId: user.id,
-          tenantId: selectedTenantId,
-          roleId
+          tenantId: selection.tenantId,
+          roleId: selection.roleId
         }).subscribe({
           next: () => {
             this.loadUsers();

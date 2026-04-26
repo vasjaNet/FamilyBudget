@@ -2,6 +2,7 @@ package org.s3m.userservice.usertenant.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.s3m.userservice.role.entity.Role;

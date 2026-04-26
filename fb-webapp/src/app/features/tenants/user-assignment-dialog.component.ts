@@ -6,23 +6,23 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
-import { Tenant } from '../../core/models/tenant.model';
+import { User } from '../../core/models/user.model';
 import { Role } from '../../core/models/role.model';
 
-export interface TenantAssignmentDialogData {
-  userId: string;
-  assignedTenantIds: string[];
-  availableTenants: Tenant[];
+export interface UserAssignmentDialogData {
+  tenantId: string;
+  assignedUserIds: string[];
+  availableUsers: User[];
   availableRoles: Role[];
 }
 
-export interface TenantAssignmentDialogResult {
-  tenantId: string;
+export interface UserAssignmentDialogResult {
+  userId: string;
   roleId: string;
 }
 
 @Component({
-  selector: 'app-tenant-assignment-dialog',
+  selector: 'app-user-assignment-dialog',
   standalone: true,
   imports: [
     CommonModule,
@@ -34,13 +34,13 @@ export interface TenantAssignmentDialogResult {
     MatOptionModule,
   ],
   template: `
-    <h2 mat-dialog-title>Add Tenant</h2>
+    <h2 mat-dialog-title>Add User</h2>
     <mat-dialog-content>
       <mat-form-field appearance="outline" style="width: 100%;">
-        <mat-label>Select Tenant</mat-label>
-        <mat-select [(value)]="selectedTenantId">
-          @for (tenant of availableTenants; track tenant.id) {
-            <mat-option [value]="tenant.id">{{ tenant.name }}</mat-option>
+        <mat-label>Select User</mat-label>
+        <mat-select [(value)]="selectedUserId">
+          @for (user of availableUsers; track user.id) {
+            <mat-option [value]="user.id">{{ user.username }} ({{ user.email }})</mat-option>
           }
         </mat-select>
       </mat-form-field>
@@ -56,30 +56,30 @@ export interface TenantAssignmentDialogResult {
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="onCancel()">Cancel</button>
-      <button mat-raised-button color="primary" [disabled]="!selectedTenantId || !selectedRoleId" (click)="onConfirm()">
+      <button mat-raised-button color="primary" [disabled]="!selectedUserId || !selectedRoleId" (click)="onConfirm()">
         Add
       </button>
     </mat-dialog-actions>
   `,
 })
-export class TenantAssignmentDialogComponent {
-  private dialogRef = inject(MatDialogRef<TenantAssignmentDialogComponent, TenantAssignmentDialogResult | null>);
+export class UserAssignmentDialogComponent {
+  private dialogRef = inject(MatDialogRef<UserAssignmentDialogComponent, UserAssignmentDialogResult | null>);
 
-  selectedTenantId: string | null = null;
+  selectedUserId: string | null = null;
   selectedRoleId: string | null = null;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: TenantAssignmentDialogData) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public data: UserAssignmentDialogData) {}
 
-  get availableTenants(): Tenant[] {
-    return this.data.availableTenants.filter(
-      t => !this.data.assignedTenantIds.includes(t.id)
+  get availableUsers(): User[] {
+    return this.data.availableUsers.filter(
+      u => !this.data.assignedUserIds.includes(u.id)
     );
   }
 
   onConfirm(): void {
-    if (this.selectedTenantId && this.selectedRoleId) {
+    if (this.selectedUserId && this.selectedRoleId) {
       this.dialogRef.close({
-        tenantId: this.selectedTenantId,
+        userId: this.selectedUserId,
         roleId: this.selectedRoleId
       });
     }
