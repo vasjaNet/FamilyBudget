@@ -3,10 +3,7 @@ package org.s3m.userservice.user.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.s3m.userservice.user.dto.CreateUserRequest;
-import org.s3m.userservice.user.dto.UpdateUserRequest;
-import org.s3m.userservice.user.dto.UserResponse;
-import org.s3m.userservice.user.dto.UserTenantResponse;
+import org.s3m.userservice.user.dto.*;
 import org.s3m.userservice.user.entity.User;
 import org.s3m.userservice.usertenant.entity.UserTenant;
 
@@ -25,6 +22,11 @@ public interface UserMapper {
     UserResponse mapToResponse(User user);
 
     List<UserResponse> mapToResponseList(List<User> users);
+
+    @Mapping(target = "fullName", expression = "java(user.getFirstName() + \" \" + user.getLastName())")
+    UserResponseBasic mapToUserResponseBasic(User user);
+
+    List<UserResponseBasic> mapToUserResponseBasicList(List<User> user);
 
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)

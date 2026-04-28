@@ -7,6 +7,8 @@ import org.s3m.userservice.tenant.dto.*;
 import org.s3m.userservice.tenant.entity.Tenant;
 import org.s3m.userservice.usertenant.entity.UserTenant;
 
+import java.util.List;
+
 @Mapper
 public interface TenantMapper {
 
@@ -18,6 +20,9 @@ public interface TenantMapper {
     TenantUserResponse mapToResponse(UserTenant userTenant);
 
     TenantResponse mapToResponse(Tenant tenant);
+    List<TenantResponse> mapToResponseList(List<Tenant> tenants);
+    TenantResponseBasic mapToResponseBasic(Tenant tenant);
+    List<TenantResponseBasic> mapToResponseBasicList(List<Tenant> tenants);
 
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)

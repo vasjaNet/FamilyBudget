@@ -72,7 +72,7 @@ export class TenantsComponent implements OnInit {
 
   loadUsers(onLoaded?: () => void): void {
     this.loading = true;
-    this.userService.getAllUsers().subscribe({
+    this.userService.getAllUsersBasic().subscribe({
       next: (response) => {
         this.allUsers = response.data || [];
         this.loading = false;
@@ -87,7 +87,7 @@ export class TenantsComponent implements OnInit {
 
   loadRoles(onLoaded?: () => void): void {
     this.loading = true;
-    this.roleService.getAllRoles().subscribe({
+    this.roleService.getAllRolesBasic().subscribe({
       next: (response) => {
         this.allRoles = response.data || [];
         this.loading = false;

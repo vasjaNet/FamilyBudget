@@ -4,6 +4,7 @@ import org.jspecify.annotations.NonNull;
 import org.s3m.userservice.user.entity.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,8 +18,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @EntityGraph(attributePaths = {"userTenants", "userTenants.tenant", "userTenants.userRole"})
     List<User> findAll();
 
+    @Query("SELECT u FROM User u")
+    List<User> findAllBasic();
+
     @Override
-    @EntityGraph(attributePaths = {"userTenants", "userTenants.tenant", "userTenants.userRole"})
+    @EntityGraph(attributePaths = {"userTenants", "userTenants.tenant", "userTenants.userRole", "userTenants.userRole.rolePermissions"})
     Optional<User> findById(@NonNull UUID id);
 
     Optional<User> findByUsername(String username);

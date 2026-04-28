@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.s3m.userservice.user.dto.CreateUserRequest;
 import org.s3m.userservice.user.dto.UpdateUserRequest;
 import org.s3m.userservice.user.dto.UserResponse;
+import org.s3m.userservice.user.dto.UserResponseBasic;
 import org.s3m.userservice.user.entity.User;
 import org.s3m.userservice.user.mapper.UserMapper;
 import org.s3m.userservice.user.repository.UserRepository;
@@ -55,6 +56,11 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UserResponse> getAllUsers() {
         return userMapper.mapToResponseList(userRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserResponseBasic> getAllUsersBasic() {
+        return userMapper.mapToUserResponseBasicList(userRepository.findAllBasic());
     }
 
     @CacheEvict(value = "users", key = "#userId")

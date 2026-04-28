@@ -11,6 +11,7 @@ import org.s3m.commonlib.util.AppConstants;
 import org.s3m.userservice.user.dto.CreateUserRequest;
 import org.s3m.userservice.user.dto.UpdateUserRequest;
 import org.s3m.userservice.user.dto.UserResponse;
+import org.s3m.userservice.user.dto.UserResponseBasic;
 import org.s3m.userservice.user.service.UserService;
 import org.s3m.userservice.usertenant.dto.CreateUserTenantRequest;
 import org.s3m.userservice.usertenant.dto.UserTenantResponse;
@@ -86,6 +87,12 @@ public class UserController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers(@AuthenticationPrincipal Jwt jwt) {
         List<UserResponse> response = userService.getAllUsers();
+        return ResponseEntity.ok(ApiResponse.success("Users retrieved successfully", response));
+    }
+
+    @GetMapping("/basic")
+    public ResponseEntity<ApiResponse<List<UserResponseBasic>>> getAllUsersBasic(@AuthenticationPrincipal Jwt jwt) {
+        List<UserResponseBasic> response = userService.getAllUsersBasic();
         return ResponseEntity.ok(ApiResponse.success("Users retrieved successfully", response));
     }
 
