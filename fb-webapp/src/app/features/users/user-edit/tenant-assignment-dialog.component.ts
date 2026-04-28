@@ -6,8 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
-import { Tenant } from '../../core/models/tenant.model';
-import { Role } from '../../core/models/role.model';
+import { Tenant } from '../../../core/models/tenant.model';
+import { Role } from '../../../core/models/role.model';
 
 export interface TenantAssignmentDialogData {
   userId: string;
