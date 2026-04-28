@@ -3,8 +3,8 @@
 
   <div class="page-header">
     <div>
-      <h1 class="page-title">Edit User</h1>
-      <p class="page-subtitle">Update user information and status.</p>
+      <h1 class="page-title">{{ isCreateMode ? 'Create User' : 'Edit User' }}</h1>
+      <p class="page-subtitle">{{ isCreateMode ? 'Fill in the details to create a new user.' : 'Update user information and status.' }}</p>
     </div>
   </div>
 
@@ -14,13 +14,18 @@
         <div class="loading-container">
           <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
         </div>
-      } @else if (user) {
+      } @else if (isCreateMode || user) {
         <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
           <div class="form-row">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Username</mat-label>
-              <input matInput formControlName="username" readonly />
-              <mat-hint>Username cannot be changed</mat-hint>
+              <input matInput formControlName="username" [readonly]="!isCreateMode" />
+              @if (!isCreateMode) {
+                <mat-hint>Username cannot be changed</mat-hint>
+              }
+              @if (isCreateMode) {
+                <mat-error *ngIf="userForm.get('username')?.hasError('required')">Username is required</mat-error>
+              }
             </mat-form-field>
           </div>
 
@@ -55,36 +60,38 @@
               </mat-select>
             </mat-form-field>
           </div>
-        </form>
 
-        <!-- Tenant Management Section -->
-        <div class="tenant-section">
-          <div class="tenant-header">
-            <h2 class="tenant-section-title">Tenant Assignments</h2>
-            <button mat-raised-button color="primary" (click)="openAddTenantDialog()" [disabled]="loading">
-              <mat-icon>add</mat-icon>
-              Add Tenant
-            </button>
-          </div>
 
-          @if (assignedTenants.length === 0) {
-            <p class="no-tenants">No tenants assigned to this user.</p>
-          } @else {
-            <div class="tenant-list">
-              @for (tenant of assignedTenants; track tenant) {
-                <div class="tenant-item">
-                  <div class="tenant-info">
-                    <span class="tenant-name">{{ tenant.tenantName }}</span>
-                    <span class="tenant-role">{{ tenant.roleName }}</span>
-                  </div>
-                  <button mat-icon-button color="warn" (click)="removeTenant(tenant.tenantId)" matTooltip="Remove tenant">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </div>
-              }
+        <!-- Tenant Management Section (edit mode only) -->
+        @if (!isCreateMode) {
+          <div class="tenant-section">
+            <div class="tenant-header">
+              <h2 class="tenant-section-title">Tenant Assignments</h2>
+              <button mat-raised-button color="primary" type="button" (click)="openAddTenantDialog()" [disabled]="loading">
+                <mat-icon>add</mat-icon>
+                Add Tenant
+              </button>
             </div>
-          }
-        </div>
+
+            @if (assignedTenants.length === 0) {
+              <p class="no-tenants">No tenants assigned to this user.</p>
+            } @else {
+              <div class="tenant-list">
+                @for (tenant of assignedTenants; track tenant) {
+                  <div class="tenant-item">
+                    <div class="tenant-info">
+                      <span class="tenant-name">{{ tenant.tenantName }}</span>
+                      <span class="tenant-role">{{ tenant.roleName }}</span>
+                    </div>
+                    <button mat-icon-button color="warn" (click)="removeTenant(tenant.tenantId)" matTooltip="Remove tenant">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
 
         <div class="form-actions">
             <button mat-button type="button" (click)="onCancel()">Cancel</button>
@@ -92,9 +99,10 @@
               @if (saving) {
                 <mat-progress-spinner mode="indeterminate" diameter="18"></mat-progress-spinner>
               }
-              Save Changes
+              {{ isCreateMode ? 'Create User' : 'Save Changes' }}
             </button>
         </div>
+        </form>
       }
     </mat-card-content>
   </mat-card>

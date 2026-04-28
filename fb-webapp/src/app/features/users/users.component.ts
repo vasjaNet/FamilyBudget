@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../core/services/user.service';
 import { User } from '../../core/models/user.model';
-import { UserFormDialogComponent, UserFormDialogData } from './user-form-dialog.component';
+import { Router } from '@angular/router';
 import { ConfirmDialogComponent, ConfirmDialogData } from './confirm-dialog.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-users',
@@ -32,6 +32,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from './confirm-dialog.comp
 })
 export class UsersComponent implements OnInit {
   private userService = inject(UserService);
+  private router = inject(Router);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
 
@@ -58,20 +59,7 @@ export class UsersComponent implements OnInit {
   }
 
   openCreateDialog(): void {
-    const dialogRef = this.dialog.open<UserFormDialogComponent, UserFormDialogData, User | null>(
-      UserFormDialogComponent,
-      {
-        width: '500px',
-        data: { mode: 'create' }
-      }
-    );
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.loadUsers();
-        this.snackBar.open('User created successfully', 'Close', { duration: 3000 });
-      }
-    });
+    this.router.navigate(['/users/new']);
   }
 
   confirmDelete(user: User): void {

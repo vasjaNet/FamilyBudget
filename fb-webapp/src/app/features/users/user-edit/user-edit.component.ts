@@ -16,13 +16,17 @@ import { UserService } from '../../../core/services/user.service';
 import { UserTenantService } from '../../../core/services/user-tenant.service';
 import { TenantService } from '../../../core/services/tenant.service';
 import { RoleService } from '../../../core/services/role.service';
-import { UpdateUserRequest, User } from '../../../core/models/user.model';
+import { CreateUserRequest, UpdateUserRequest, User } from '../../../core/models/user.model';
 import { UserTenantResponse } from '../../../core/models/user-tenant.model';
 import { Role } from '../../../core/models/role.model';
 import { Tenant } from '../../../core/models/tenant.model';
 import { BreadcrumbComponent, BreadcrumbItem } from '../../../shared/components/breadcrumb/breadcrumb.component';
-import { TenantAssignmentDialogComponent, TenantAssignmentDialogData, TenantAssignmentDialogResult } from '../tenant-assignment-dialog.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../confirm-dialog.component';
+import {
+  TenantAssignmentDialogComponent,
+  TenantAssignmentDialogData,
+  TenantAssignmentDialogResult
+} from './tenant-assignment-dialog.component';
 
 @Component({
   selector: 'app-user-edit',
@@ -59,6 +63,7 @@ export class UserEditComponent implements OnInit {
   userForm!: FormGroup;
   loading = false;
   saving = false;
+  isCreateMode = false;
   user: User | null = null;
   breadcrumbs: BreadcrumbItem[] = [];
   assignedTenants: UserTenantResponse[] = [];
@@ -66,14 +71,23 @@ export class UserEditComponent implements OnInit {
   allRoles: Role[] = [];
 
   ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    this.isCreateMode = this.route.snapshot.url[1].path === 'new';
     this.initForm();
-    this.loadUser();
-    this.loadTenantsAndRoles();
+    if (this.isCreateMode) {
+      this.breadcrumbs = [
+        { label: 'Users', url: '/users' },
+        { label: 'New User' },
+      ];
+    } else {
+      this.loadUser();
+      this.loadTenantsAndRoles();
+    }
   }
 
   private initForm(): void {
     this.userForm = this.fb.group({
-      username: [''],
+      username: [{ value: '', disabled: !this.isCreateMode }, this.isCreateMode ? [Validators.required] : []],
       email: ['', [Validators.required, Validators.email]],
       firstName: [''],
       lastName: [''],
@@ -83,7 +97,7 @@ export class UserEditComponent implements OnInit {
 
   loadUser(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
+    if (!id || id === 'new') {
       this.snackBar.open('Invalid user ID', 'Close', { duration: 3000 });
       this.router.navigate(['/users']);
       return;
@@ -221,29 +235,51 @@ export class UserEditComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.userForm.invalid || !this.user) return;
+    if (this.userForm.invalid) return;
+    if (!this.isCreateMode && !this.user) return;
 
     this.saving = true;
     const formValue = this.userForm.getRawValue();
 
-    const request: UpdateUserRequest = {
-      email: formValue.email,
-      firstName: formValue.firstName,
-      lastName: formValue.lastName,
-      status: formValue.status,
-    };
+    if (this.isCreateMode) {
+      const request: CreateUserRequest = {
+        username: formValue.username,
+        email: formValue.email,
+        firstName: formValue.firstName,
+        lastName: formValue.lastName,
+        status: formValue.status,
+      };
+      this.userService.createUser(request).subscribe({
+        next: () => {
+          this.saving = false;
+          this.snackBar.open('User created successfully', 'Close', { duration: 3000 });
+          this.router.navigate(['/users']);
+        },
+        error: () => {
+          this.saving = false;
+          this.snackBar.open('Failed to create user', 'Close', { duration: 3000 });
+        },
+      });
+    } else {
+      const request: UpdateUserRequest = {
+        email: formValue.email,
+        firstName: formValue.firstName,
+        lastName: formValue.lastName,
+        status: formValue.status,
+      };
 
-    this.userService.updateUser(this.user.id, request).subscribe({
-      next: () => {
-        this.saving = false;
-        this.snackBar.open('User updated successfully', 'Close', { duration: 3000 });
-        this.router.navigate(['/users']);
-      },
-      error: () => {
-        this.saving = false;
-        this.snackBar.open('Failed to update user', 'Close', { duration: 3000 });
-      },
-    });
+      this.userService.updateUser(this.user!.id, request).subscribe({
+        next: () => {
+          this.saving = false;
+          this.snackBar.open('User updated successfully', 'Close', { duration: 3000 });
+          this.router.navigate(['/users']);
+        },
+        error: () => {
+          this.saving = false;
+          this.snackBar.open('Failed to update user', 'Close', { duration: 3000 });
+        },
+      });
+    }
   }
 
   onCancel(): void {
