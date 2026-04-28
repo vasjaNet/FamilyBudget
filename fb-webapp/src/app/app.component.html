@@ -1,12 +1,17 @@
+<!-- TOPBAR -->
 <mat-toolbar color="primary" class="topbar">
+
+  <!-- Toggle sidebar -->
+  <button mat-icon-button (click)="toggleSidebar(sidenav)">
+    <mat-icon>menu</mat-icon>
+  </button>
+
   <a mat-button routerLink="/" class="brand">FamilyBudget</a>
+
   <span class="spacer"></span>
-  <nav class="nav-links">
+
+  <nav>
     @if (isAuthenticated) {
-      <a mat-button routerLink="/settings">Settings</a>
-      <a mat-button routerLink="/users">Users</a>
-      <a mat-button routerLink="/tenants">Tenants</a>
-      <a mat-button routerLink="/chat">Chat</a>
       <span class="user">{{ username }}</span>
       <button mat-stroked-button (click)="logout()">Logout</button>
     } @else {
@@ -14,7 +19,59 @@
       <a mat-raised-button routerLink="/signup">Sign Up</a>
     }
   </nav>
+
 </mat-toolbar>
-<main class="content">
-  <router-outlet></router-outlet>
-</main>
+<mat-sidenav-container class="sidenav-container">
+
+  <!-- SIDEBAR -->
+  <mat-sidenav
+    #sidenav
+    [mode]="isMobile ? 'over' : 'side'"
+    [opened]="!isMobile"
+    [class.collapsed]="isCollapsed && !isMobile"
+  >
+
+    <div class="menu">
+
+      <a mat-list-item routerLink="/settings" matTooltip="Settings" [matTooltipDisabled]="!isCollapsed">
+        <mat-icon>settings</mat-icon>
+        @if (!isCollapsed) {
+          <span>Settings</span>
+        }
+      </a>
+
+      <a mat-list-item routerLink="/users" matTooltip="Users" [matTooltipDisabled]="!isCollapsed">
+        <mat-icon>group</mat-icon>
+        @if (!isCollapsed) {
+          <span>Users</span>
+        }
+      </a>
+
+      <a mat-list-item routerLink="/tenants" matTooltip="Tenants" [matTooltipDisabled]="!isCollapsed">
+        <mat-icon>business</mat-icon>
+        @if (!isCollapsed) {
+          <span>Tenants</span>
+        }
+      </a>
+
+      <a mat-list-item routerLink="/chat" matTooltip="Chat" [matTooltipDisabled]="!isCollapsed">
+        <mat-icon>chat</mat-icon>
+        @if (!isCollapsed) {
+          <span>Chat</span>
+        }
+      </a>
+
+    </div>
+  </mat-sidenav>
+
+  <!-- MAIN CONTENT -->
+  <mat-sidenav-content>
+
+    <!-- PAGE CONTENT -->
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

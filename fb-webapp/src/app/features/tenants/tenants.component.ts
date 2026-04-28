@@ -64,6 +64,7 @@ export class TenantsComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
+        console.log(error);
         this.snackBar.open('Failed to load tenants', 'Close', { duration: 3000 });
         this.loading = false;
       }

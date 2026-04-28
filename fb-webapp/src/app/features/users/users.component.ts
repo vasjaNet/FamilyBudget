@@ -1,6 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -26,6 +27,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
     MatChipsModule,
     MatSnackBarModule,
     RouterLink,
+    MatPaginator,
+    MatPaginatorModule
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
@@ -38,7 +41,10 @@ export class UsersComponent implements OnInit {
 
   users: User[] = [];
   loading = false;
-  displayedColumns: string[] = ['username', 'email', 'firstName', 'lastName', 'tenants', 'status', 'actions'];
+  displayedColumns: string[] = ['username', 'email', 'fullName', 'tenants', 'status', 'actions'];
+  dataSource = new MatTableDataSource<User>([]);
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
     this.loadUsers();
@@ -49,9 +55,12 @@ export class UsersComponent implements OnInit {
     this.userService.getAllUsers().subscribe({
       next: (userResponse) => {
         this.users = userResponse.data || [];
+        this.dataSource = new MatTableDataSource<User>(this.users);
+        this.dataSource.paginator = this.paginator;
         this.loading = false;
       },
       error: (error) => {
+        console.error('Failed to load users:', error);
         this.snackBar.open('Failed to load users', 'Close', { duration: 3000 });
         this.loading = false;
       }
