@@ -10,6 +10,7 @@ import org.s3m.commonlib.config.ApiResponse;
 import org.s3m.commonlib.util.AppConstants;
 import org.s3m.userservice.role.dto.CreateRoleRequest;
 import org.s3m.userservice.role.dto.RoleResponse;
+import org.s3m.userservice.role.dto.RoleResponseBasic;
 import org.s3m.userservice.role.dto.UpdateRoleRequest;
 import org.s3m.userservice.role.service.RoleService;
 import org.springframework.http.HttpStatus;
@@ -84,6 +85,12 @@ public class RoleController {
         return ResponseEntity.ok(ApiResponse.success("Roles retrieved successfully", response));
     }
 
+    @GetMapping("/basic")
+    public ResponseEntity<ApiResponse<List<RoleResponseBasic>>> getAllRolesBasic() {
+        List<RoleResponseBasic> response = roleService.getAllRolesBasic();
+        return ResponseEntity.ok(ApiResponse.success("Roles retrieved successfully", response));
+    }
+
     @Operation(summary = "Update a role")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Role updated"),
@@ -109,10 +116,8 @@ public class RoleController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteRole(
-            @Parameter(description = "Role UUID") @PathVariable UUID id,
-            @Parameter(description = "ID of the user performing the action", example = "SYSTEM")
-            @RequestHeader(value = "X-User-Id", defaultValue = "SYSTEM") String userId) {
-        roleService.deleteRole(id, userId);
+            @Parameter(description = "Role UUID") @PathVariable UUID id) {
+        roleService.deleteRole(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .body(ApiResponse.success("Role deleted successfully", null));
     }

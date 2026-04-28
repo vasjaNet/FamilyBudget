@@ -16,6 +16,10 @@ export class UserService {
     return this.http.get<ApiResponse<User[]>>(this.apiUrl);
   }
 
+  getAllUsersBasic(): Observable<ApiResponse<User[]>> {
+    return this.http.get<ApiResponse<User[]>>(`${this.apiUrl}/basic`);
+  }
+
   getUserById(id: string): Observable<ApiResponse<User>> {
     return this.http.get<ApiResponse<User>>(`${this.apiUrl}/${id}`);
   }

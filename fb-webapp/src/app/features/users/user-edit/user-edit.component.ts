@@ -71,7 +71,6 @@ export class UserEditComponent implements OnInit {
   allRoles: Role[] = [];
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
     this.isCreateMode = this.route.snapshot.url[1].path === 'new';
     this.initForm();
     if (this.isCreateMode) {
@@ -138,10 +137,10 @@ export class UserEditComponent implements OnInit {
   }
 
   loadTenantsAndRoles(): void {
-    this.tenantService.getAllTenants().subscribe({
+    this.tenantService.getAllTenantsBasic().subscribe({
       next: (tResponse) => {
         this.allTenants = tResponse.data || [];
-        this.roleService.getAllRoles().subscribe({
+        this.roleService.getAllRolesBasic().subscribe({
           next: (rResponse) => {
             this.allRoles = rResponse.data || [];
           },

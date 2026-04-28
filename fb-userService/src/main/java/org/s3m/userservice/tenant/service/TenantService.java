@@ -3,6 +3,7 @@ package org.s3m.userservice.tenant.service;
 import lombok.AllArgsConstructor;
 import org.s3m.userservice.tenant.dto.CreateTenantRequest;
 import org.s3m.userservice.tenant.dto.TenantResponse;
+import org.s3m.userservice.tenant.dto.TenantResponseBasic;
 import org.s3m.userservice.tenant.dto.UpdateTenantRequest;
 import org.s3m.userservice.tenant.entity.Tenant;
 import org.s3m.userservice.tenant.mapper.TenantMapper;
@@ -53,9 +54,12 @@ public class TenantService {
 
     @Transactional(readOnly = true)
     public List<TenantResponse> getAllTenants() {
-        return tenantRepository.findAll().stream()
-                .map(tenantMapper::mapToResponse)
-                .toList();
+        return tenantMapper.mapToResponseList(tenantRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<TenantResponseBasic> getAllTenantsBasic() {
+        return tenantMapper.mapToResponseBasicList(tenantRepository.findAll());
     }
 
     @CacheEvict(value = "tenants", key = "#tenantId")

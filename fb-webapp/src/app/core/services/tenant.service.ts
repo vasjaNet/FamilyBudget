@@ -18,6 +18,10 @@ export class TenantService {
     return this.http.get<ApiResponse<Tenant[]>>(this.apiUrl);
   }
 
+  getAllTenantsBasic(): Observable<ApiResponse<Tenant[]>> {
+    return this.http.get<ApiResponse<Tenant[]>>(`${this.apiUrl}/basic`);
+  }
+
   getTenantById(id: string): Observable<ApiResponse<Tenant>> {
     return this.http.get<ApiResponse<Tenant>>(`${this.apiUrl}/${id}`);
   }

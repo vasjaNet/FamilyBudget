@@ -3,6 +3,7 @@ package org.s3m.userservice.role.service;
 import lombok.AllArgsConstructor;
 import org.s3m.userservice.role.dto.CreateRoleRequest;
 import org.s3m.userservice.role.dto.RoleResponse;
+import org.s3m.userservice.role.dto.RoleResponseBasic;
 import org.s3m.userservice.role.dto.UpdateRoleRequest;
 import org.s3m.userservice.role.entity.Role;
 import org.s3m.userservice.role.mapper.RoleMapper;
@@ -53,9 +54,12 @@ public class RoleService {
 
     @Transactional(readOnly = true)
     public List<RoleResponse> getAllRoles() {
-        return roleRepository.findAll().stream()
-                .map(roleMapper::mapToResponse)
-                .toList();
+        return roleMapper.mapToResponseList(roleRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<RoleResponseBasic> getAllRolesBasic() {
+        return roleMapper.mapToResponseBasicList(roleRepository.findAll());
     }
 
     @CacheEvict(value = "roles", key = "#roleId")
@@ -74,7 +78,7 @@ public class RoleService {
     }
 
     @CacheEvict(value = "roles", key = "#roleId")
-    public void deleteRole(UUID roleId, String changedBy) {
+    public void deleteRole(UUID roleId) {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new IllegalArgumentException("Role not found with id: " + roleId));
         roleRepository.delete(role);

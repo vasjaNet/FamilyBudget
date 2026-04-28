@@ -207,12 +207,9 @@ class TenantServiceTest {
             .build();
 
         given(tenantRepository.findAll()).willReturn(List.of(testTenant, tenant2));
-        given(tenantMapper.mapToResponse(testTenant)).willReturn(testTenantResponse);
-        given(tenantMapper.mapToResponse(tenant2)).willReturn(
-            new TenantResponse(tenant2.getId(), "Business Tenant", "Business tenant",
-                TenantType.BUSINESS, null, null, null, null, List.of())
-        );
-
+        given(tenantMapper.mapToResponseList(List.of(testTenant, tenant2))).willReturn(List.of(testTenantResponse,
+                new TenantResponse(tenant2.getId(), "Business Tenant", "Business tenant",
+                        TenantType.BUSINESS, null, null, null, null, List.of())));
         // When
         List<TenantResponse> result = tenantService.getAllTenants();
 

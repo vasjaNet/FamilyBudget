@@ -199,12 +199,10 @@ class RoleServiceTest {
             .build();
 
         given(roleRepository.findAll()).willReturn(List.of(testRole, role2));
-        given(roleMapper.mapToResponse(testRole)).willReturn(testRoleResponse);
-        given(roleMapper.mapToResponse(role2)).willReturn(
-            new RoleResponse(role2.getId(), "USER", "User role", null, null, null, null)
-        );
-
-        // When
+        given(roleMapper.mapToResponseList(List.of(testRole, role2))).willReturn(
+                List.of(testRoleResponse,
+                        new RoleResponse(role2.getId(), "USER", "User role", null, null, null, null)));
+         // When
         List<RoleResponse> result = roleService.getAllRoles();
 
         // Then
@@ -314,7 +312,7 @@ class RoleServiceTest {
         given(roleRepository.findById(testRoleId)).willReturn(Optional.of(testRole));
 
         // When
-        roleService.deleteRole(testRoleId, "admin");
+        roleService.deleteRole(testRoleId);
 
         // Then
         verify(roleRepository).delete(testRole);
@@ -327,7 +325,7 @@ class RoleServiceTest {
         given(roleRepository.findById(testRoleId)).willReturn(Optional.empty());
 
         // When & Then
-        assertThatThrownBy(() -> roleService.deleteRole(testRoleId, "admin"))
+        assertThatThrownBy(() -> roleService.deleteRole(testRoleId))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Role not found with id: " + testRoleId);
 

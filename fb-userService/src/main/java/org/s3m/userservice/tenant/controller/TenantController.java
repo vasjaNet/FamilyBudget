@@ -10,6 +10,7 @@ import org.s3m.commonlib.config.ApiResponse;
 import org.s3m.commonlib.util.AppConstants;
 import org.s3m.userservice.tenant.dto.CreateTenantRequest;
 import org.s3m.userservice.tenant.dto.TenantResponse;
+import org.s3m.userservice.tenant.dto.TenantResponseBasic;
 import org.s3m.userservice.tenant.dto.UpdateTenantRequest;
 import org.s3m.userservice.tenant.service.TenantService;
 import org.s3m.userservice.usertenant.dto.CreateUserTenantRequest;
@@ -83,8 +84,14 @@ public class TenantController {
     })
     @GetMapping
     public ResponseEntity<ApiResponse<List<TenantResponse>>> getAllTenants() {
-        List<TenantResponse> response = tenantService.getAllTenants();
-        return ResponseEntity.ok(ApiResponse.success("Tenants retrieved successfully", response));
+        return ResponseEntity.ok(
+                ApiResponse.success("Tenants retrieved successfully", tenantService.getAllTenants()));
+    }
+
+    @GetMapping("/basic")
+    public ResponseEntity<ApiResponse<List<TenantResponseBasic>>> getAllTenantsBasic() {
+        return ResponseEntity.ok(
+                ApiResponse.success("Tenants retrieved successfully", tenantService.getAllTenantsBasic()));
     }
 
     @Operation(summary = "Update a tenant")
