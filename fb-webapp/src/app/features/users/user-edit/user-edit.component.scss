@@ -1,0 +1,97 @@
+.user-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px 0;
+
+  .form-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+
+    .full-width {
+      width: 100%;
+    }
+
+    .half-width {
+      flex: 1;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #e0e0e0;
+
+    button {
+      min-width: 100px;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}
+
+.tenant-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e0e0e0;
+
+  .tenant-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .tenant-section-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+      margin: 0;
+    }
+  }
+
+  .no-tenants {
+    color: #666;
+    font-style: italic;
+  }
+
+  .tenant-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tenant-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+
+    .tenant-info {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+
+      .tenant-name {
+        font-weight: 500;
+        color: #333;
+      }
+
+      .tenant-role {
+        color: #666;
+        font-size: 14px;
+        padding: 2px 8px;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+      }
+    }
+  }
+}

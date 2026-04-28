@@ -27,4 +27,8 @@ export class UserTenantService {
   removeUserFromTenant(userId: string, tenantId: string): Observable<ApiResponse<void>> {
     return this.http.delete<ApiResponse<void>>(`${environment.apiBaseUrl}${environment.apiPrefix}/users/${userId}/tenant/${tenantId}`);
   }
+
+  getUserTenantsByUserId(userId: string): Observable<ApiResponse<UserTenantResponse[]>> {
+    return this.http.get<ApiResponse<UserTenantResponse[]>>(`${environment.apiBaseUrl}${environment.apiPrefix}/users/${userId}/tenants`);
+  }
 }
