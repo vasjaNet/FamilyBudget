@@ -2,11 +2,12 @@ package org.s3m.userservice.rolepermission.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import org.s3m.commonlib.config.ApiResponse;
+import org.s3m.commonlib.config.ResponseWrapper;
 import org.s3m.commonlib.util.AppConstants;
 import org.s3m.userservice.rolepermission.dto.CreateRolePermissionRequest;
 import org.s3m.userservice.rolepermission.dto.RolePermissionResponse;
@@ -29,19 +30,19 @@ public class RolePermissionController {
 
     @Operation(summary = "Assign a permission to a role")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Permission assigned to role"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid request"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Role or permission not found"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "409", description = "Assignment already exists"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "201", description = "Permission assigned to role"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Role or permission not found"),
+            @ApiResponse(responseCode = "409", description = "Assignment already exists"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<ApiResponse<RolePermissionResponse>> assignPermissionToRole(
+    public ResponseEntity<ResponseWrapper<RolePermissionResponse>> assignPermissionToRole(
             @RequestBody CreateRolePermissionRequest request) {
         RolePermissionResponse response = rolePermissionService.assignPermissionToRole(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Permission assigned to role successfully", response));
+                .body(ResponseWrapper.success("Permission assigned to role successfully", response));
     }
 
     /*@GetMapping("/{id}")
@@ -52,55 +53,55 @@ public class RolePermissionController {
 
     @Operation(summary = "Get a role-permission assignment by role and permission")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Assignment retrieved"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Assignment not found"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Assignment retrieved"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Assignment not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/role/{roleId}/permission/{permissionId}")
-    public ResponseEntity<ApiResponse<RolePermissionResponse>> getRolePermissionByRoleAndPermission(
+    public ResponseEntity<ResponseWrapper<RolePermissionResponse>> getRolePermissionByRoleAndPermission(
             @Parameter(description = "Role UUID") @PathVariable UUID roleId,
             @Parameter(description = "Permission UUID") @PathVariable UUID permissionId) {
         RolePermissionResponse response = rolePermissionService.getRolePermissionByRoleAndPermission(roleId, permissionId);
-        return ResponseEntity.ok(ApiResponse.success("Role-Permission relationship retrieved successfully", response));
+        return ResponseEntity.ok(ResponseWrapper.success("Role-Permission relationship retrieved successfully", response));
     }
 
     @Operation(summary = "Get all permission assignments for a role")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Assignments retrieved"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Assignments retrieved"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/role/{roleId}")
-    public ResponseEntity<ApiResponse<List<RolePermissionResponse>>> getRolePermissionsByRoleId(
+    public ResponseEntity<ResponseWrapper<List<RolePermissionResponse>>> getRolePermissionsByRoleId(
             @Parameter(description = "Role UUID") @PathVariable UUID roleId) {
         List<RolePermissionResponse> response = rolePermissionService.getRolePermissionsByRoleId(roleId);
-        return ResponseEntity.ok(ApiResponse.success("Role-Permissions retrieved successfully", response));
+        return ResponseEntity.ok(ResponseWrapper.success("Role-Permissions retrieved successfully", response));
     }
 
     @Operation(summary = "Get all role assignments for a permission")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Assignments retrieved"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Assignments retrieved"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/permission/{permissionId}")
-    public ResponseEntity<ApiResponse<List<RolePermissionResponse>>> getRolePermissionsByPermissionId(
+    public ResponseEntity<ResponseWrapper<List<RolePermissionResponse>>> getRolePermissionsByPermissionId(
             @Parameter(description = "Permission UUID") @PathVariable UUID permissionId) {
         List<RolePermissionResponse> response = rolePermissionService.getRolePermissionsByPermissionId(permissionId);
-        return ResponseEntity.ok(ApiResponse.success("Role-Permissions retrieved successfully", response));
+        return ResponseEntity.ok(ResponseWrapper.success("Role-Permissions retrieved successfully", response));
     }
 
     @Operation(summary = "Get all role-permission assignments")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Assignments retrieved"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "200", description = "Assignments retrieved"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
-    public ResponseEntity<ApiResponse<List<RolePermissionResponse>>> getAllRolePermissions() {
+    public ResponseEntity<ResponseWrapper<List<RolePermissionResponse>>> getAllRolePermissions() {
         List<RolePermissionResponse> response = rolePermissionService.getAllRolePermissions();
-        return ResponseEntity.ok(ApiResponse.success("Role-Permissions retrieved successfully", response));
+        return ResponseEntity.ok(ResponseWrapper.success("Role-Permissions retrieved successfully", response));
     }
 
     /*@DeleteMapping("/{id}")
@@ -114,18 +115,18 @@ public class RolePermissionController {
 
     @Operation(summary = "Remove a permission from a role")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Permission removed from role"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Assignment not found"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "204", description = "Permission removed from role"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Assignment not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/role/{roleId}/permission/{permissionId}")
-    public ResponseEntity<ApiResponse<Void>> removePermissionFromRoleByIds(
+    public ResponseEntity<ResponseWrapper<Void>> removePermissionFromRoleByIds(
             @Parameter(description = "Role UUID") @PathVariable UUID roleId,
             @Parameter(description = "Permission UUID") @PathVariable UUID permissionId) {
         rolePermissionService.removePermissionFromRoleByIds(roleId, permissionId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(ApiResponse.success("Permission removed from role successfully", null));
+                .body(ResponseWrapper.success("Permission removed from role successfully", null));
     }
 
 }
