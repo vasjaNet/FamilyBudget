@@ -2,19 +2,32 @@
   <div class="page-header">
     <div>
       <h1 class="page-title">Chat</h1>
-      <p class="page-subtitle">Stay connected with your family and keep conversations in one place.</p>
     </div>
   </div>
 
-  <mat-card class="content-card">
-    <mat-card-header>
-      <mat-card-title>Family Chat</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p class="placeholder-copy">
-        Chat capabilities are currently being updated. This area will soon include family rooms,
-        message history, and quick member mentions.
-      </p>
-    </mat-card-content>
-  </mat-card>
+  <div class="room-header">
+    <h2>#{{ currentRoom }}</h2>
+    <div class="room-tabs">
+      <button *ngFor="let room of rooms"
+              [class.active]="room === currentRoom"
+              (click)="switchRoom(room)">
+        {{ room }}
+      </button>
+    </div>
+  </div>
+
+  <div class="messages" #messageContainer>
+    <div *ngFor="let msg of messages[currentRoom]">
+      <span class="sender">{{ msg.sender }} </span>
+      <span class="content">{{ msg.content }} </span>
+      <span class="time">{{ msg.timestamp | date:'HH:mm' }}</span>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <input [(ngModel)]="newMessage"
+           (keyup.enter)="sendMessage()"
+           placeholder="Type a message..." />
+    <button (click)="sendMessage()">Send</button>
+  </div>
 </section>
