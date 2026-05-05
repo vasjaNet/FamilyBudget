@@ -34,8 +34,8 @@ dependencyManagement {
 
 dependencies {
     // Common utilities
-    compileOnly "org.projectlombok:lombok:${rootProject.ext.lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${rootProject.ext.lombokVersion}"
+    //compileOnly "org.projectlombok:lombok:${rootProject.ext.lombokVersion}"
+    //annotationProcessor "org.projectlombok:lombok:${rootProject.ext.lombokVersion}"
 
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

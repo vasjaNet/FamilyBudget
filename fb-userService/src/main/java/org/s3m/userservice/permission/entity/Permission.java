@@ -42,6 +42,7 @@ public class Permission {
     private String description;
 
     @OneToMany(mappedBy = "permission")
+    @Builder.Default
     private Set<RolePermission> rolePermissions = new HashSet<>();
 
     @CreationTimestamp
