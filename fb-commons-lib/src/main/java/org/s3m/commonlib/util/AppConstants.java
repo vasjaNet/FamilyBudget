@@ -1,11 +1,10 @@
 package org.s3m.commonlib.util;
 
-import lombok.experimental.UtilityClass;
 
 /**
  * Common constants for the application
  */
-@UtilityClass
+//@UtilityClass
 public class AppConstants {
 
     public static final String API_VERSION = "v1";

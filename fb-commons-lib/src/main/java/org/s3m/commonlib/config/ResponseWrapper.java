@@ -1,11 +1,10 @@
 package org.s3m.commonlib.config;
 
-import lombok.Data;
 
 /**
  * Common API response wrapper used across all services
  */
-@Data
+//@Data
 public class ResponseWrapper<T> {
 
     private String status;
